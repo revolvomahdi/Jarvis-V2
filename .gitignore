@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Windows
+desktop.ini
+Thumbs.db
+
+# Proje - kisisel veriler (guncellenmez)
+data/chat_history.json
+data/long_memory.json
+data/user_profile.json
+data/archives/
+
+# Eski dosyalar
+old/
+
+# Guncelleme yedekleri
+.update_backup/
+
+# Gemini
+.gemini/

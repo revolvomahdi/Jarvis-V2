@@ -1,0 +1,33 @@
+customtkinter
+ollama
+requests
+google-genai
+Pillow
+pyaudio
+SpeechRecognition
+edge-tts
+pyttsx3
+fastapi
+uvicorn
+jinja2
+python-multipart
+psutil
+pywebview
+screen-brightness-control
+pycaw
+comtypes
+qrcode
+pygame
+openai-whisper
+pyautogui
+beautifulsoup4
+duckduckgo-search
+wikipedia
+
+# Image Generation Core
+# Torch handled separately in setup script
+diffusers
+transformers
+accelerate
+safetensors
+invisible-watermark
