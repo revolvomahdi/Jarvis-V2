@@ -51,6 +51,13 @@ ALLOWED_EXTENSIONS = [
     ".py", ".txt", ".json", ".bat", ".html", ".css", ".js",
     ".md", ".yaml", ".yml", ".toml", ".cfg", ".ini", ".env",
     ".png", ".jpg", ".jpeg", ".gif", ".svg", ".ico",
+    ".mp3", ".wav", ".ogg",
+]
+
+# Uzantisi olmayan ama dahil edilecek dosyalar
+ALLOWED_DOTFILES = [
+    ".env",
+    ".gitignore",
 ]
 
 
@@ -104,7 +111,7 @@ def scan_project(project_dir):
 
             # Uzanti kontrolu
             _, ext = os.path.splitext(filename)
-            if ext.lower() not in ALLOWED_EXTENSIONS:
+            if ext.lower() not in ALLOWED_EXTENSIONS and filename not in ALLOWED_DOTFILES:
                 continue
 
             file_hash = calculate_hash(full_path)
