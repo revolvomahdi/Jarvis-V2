@@ -61,16 +61,42 @@ def print_status(icon, message, color=Colors.RESET):
     print(f"  {color}{icon}{Colors.RESET} {message}")
 
 
+# Binary dosya uzantilari (hash normalize edilmez)
+BINARY_EXTENSIONS = {
+    ".png", ".jpg", ".jpeg", ".gif", ".svg", ".ico",
+    ".mp3", ".wav", ".ogg",
+    ".zip", ".tar", ".gz", ".bz2",
+    ".pdf", ".exe", ".dll",
+}
+
+
+def is_binary_file(filepath):
+    """Dosyanin binary olup olmadigini kontrol eder."""
+    _, ext = os.path.splitext(filepath)
+    return ext.lower() in BINARY_EXTENSIONS
+
+
 def calculate_hash(filepath):
-    """Dosyanin SHA256 hash degerini hesaplar."""
+    """Dosyanin SHA256 hash degerini hesaplar.
+    Text dosyalarda satir sonlarini normalize eder (CRLF -> LF)
+    boylece Windows ve Linux'ta ayni hash uretilir."""
     sha256 = hashlib.sha256()
     try:
-        with open(filepath, "rb") as f:
-            while True:
-                chunk = f.read(8192)
-                if not chunk:
-                    break
-                sha256.update(chunk)
+        if is_binary_file(filepath):
+            # Binary dosya - oldugu gibi hash'le
+            with open(filepath, "rb") as f:
+                while True:
+                    chunk = f.read(8192)
+                    if not chunk:
+                        break
+                    sha256.update(chunk)
+        else:
+            # Text dosya - satir sonlarini normalize et
+            with open(filepath, "rb") as f:
+                content = f.read()
+            # CRLF -> LF normalize
+            content = content.replace(b"\r\n", b"\n")
+            sha256.update(content)
         return sha256.hexdigest()
     except (IOError, OSError):
         return None

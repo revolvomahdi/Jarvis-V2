@@ -1,172 +1,172 @@
 {
   "project_name": "Yapay Zeka Asistani v2",
-  "manifest_version": 10005,
+  "manifest_version": 10006,
   "base_url": "https://raw.githubusercontent.com/revolvomahdi/Jarvis-V2/main/",
-  "last_updated": "2026-02-20 17:27:58",
+  "last_updated": "2026-02-20 17:30:24",
   "files": {
     ".env": {
-      "version": 10001,
-      "hash": "5993c8503d82edc16985113bb57ee65750ed1f585d2772c188855279fdfcd156"
+      "version": 10002,
+      "hash": "09f88eba336c9fc3d30fdc3931cfec845c188151988b18154d39f3ca2dbcbd8f"
     },
     ".gitignore": {
-      "version": 10002,
-      "hash": "2dd94177eaf3b50056100dcbc886ea99da2860e2b12172b3ff63308c694457c1"
+      "version": 10003,
+      "hash": "969b9c882173e7ad8f93819f5d4d56974e3c961526ef3f002308e21f237dbbb4"
     },
     "app.py": {
-      "version": 10001,
-      "hash": "a2b64effbb83c1456230ccfcc5f135c3e2e59b745204baa1eefd94db883396c6"
+      "version": 10002,
+      "hash": "c1ebd44dea6b0f4b71bedfd3d49458f1d74fb8ff5b2659f9136b94273926a91d"
     },
     "config.json": {
-      "version": 10001,
-      "hash": "de182cc0354add176cef472b3b363cc0a23107cafffb4e654181cf46d07433c4"
+      "version": 10002,
+      "hash": "9da7c63c31c630eec88280c5237b559cb12e153bac744459921e0a0ea5f7c755"
     },
     "data/en.json": {
-      "version": 10001,
-      "hash": "5f7e81b64c2c2f9fb05df6196ef7383cc8a996b39e6d144481cd73f33846bee3"
+      "version": 10002,
+      "hash": "3c826ec42a30226058b20fbdb580940df56433d1cfc1a211449c748d1e285484"
     },
     "data/tr.json": {
-      "version": 10001,
-      "hash": "09e51c3467fd4f7fdad2868c2dd28e723c3ef52cbdfab32ebfb08d89a88ea161"
+      "version": 10002,
+      "hash": "a8ce6cf43a22a2bcf3fa6c99e86ea32ab97933aace18da58f7da6b7b54efeebc"
     },
     "engines/base.py": {
-      "version": 10001,
-      "hash": "6c531773daa90c61d4bb8d0fa814d2a08c81e4592a18f4d1991080a2790ba97c"
+      "version": 10002,
+      "hash": "22307fd140f0dbcc955d74da2970655fdd50eee31e23aca6012694985347d9b4"
     },
     "engines/gemini_engine.py": {
-      "version": 10001,
-      "hash": "14a2300d7f0616960e791102bfe3fd3fe14a52dce6bdae041787a814585ca4f3"
+      "version": 10002,
+      "hash": "8aa27f535e287cbea6dcfe45d8bf4aeb117f2283a4aa8ac294ada279bddd576e"
     },
     "engines/image_generator.py": {
-      "version": 10001,
-      "hash": "6b0735832de31231cc0b2c656371ba11b0600b34b359009ee0fb16ab463ac588"
+      "version": 10002,
+      "hash": "c4867e0d6ca55b05375cf6bc5a9bc0a6f9688fc83ee92212b18f4e2e4b72ec47"
     },
     "engines/local_brain.py": {
-      "version": 10001,
-      "hash": "11231a9c414f303dbb1d27cc56d108b95deceb90dd7e98996ba18a38f61b2c68"
+      "version": 10002,
+      "hash": "74df37c8d617414746ebbe5deae5b2c0d382dcd4b097e320a0a630ff5bab3975"
     },
     "engines/manager.py": {
-      "version": 10001,
-      "hash": "cf24f27920fb6c13c805199f86253dd0c0f21f433613507ba165871116f6bf9b"
+      "version": 10002,
+      "hash": "0fb76b04fcd360613f6f0334d1db663df832c183072ba118b32847822767b3e4"
     },
     "engines/ollama_engine.py": {
-      "version": 10001,
-      "hash": "f56bfaae5f36aae40f50b8ee1aba38d012e560fff25ebe065a2b8633685434ee"
+      "version": 10002,
+      "hash": "7a00b72691e58b3bcc19d4dc17cb06090bd086993ffb10a79d4f2187be1e3a6e"
     },
     "engines/system_tools.py": {
-      "version": 10001,
-      "hash": "15375bf2928e8c264c57f3fc6a510f1b44603b938b38a46211f9ec87bc62ff49"
+      "version": 10002,
+      "hash": "2cac2ad905afacb4a23270463b4d0b151d0f27c06b31d653c6094c2bd9aa2b6e"
     },
     "engines/task_manager.py": {
-      "version": 10001,
-      "hash": "111554f7209c80677a19c46108210a08858d482314e59b53b035b298f2f914be"
+      "version": 10002,
+      "hash": "6ecb0fc55e52ace43bb2466c7555eca1fff786aa94b5fe2841a27137518fd67c"
     },
     "installer/EKSIK_MODEL_TAMAMLA.bat": {
-      "version": 10001,
-      "hash": "a39adaf90b665ddf321d2035f4028531356ec3c38a035ca97af48c63ac9019f3"
+      "version": 10002,
+      "hash": "e4d6eace5ea62a3791dde82623920d6acb3d8c0d10d4abb7596a00d7f0b0e853"
     },
     "installer/HERSEYI_KUR_SETUP.bat": {
-      "version": 10001,
-      "hash": "a24ca58100a176f35bdd97c76746e07f8d3f63e88aee55dbf50a9525082df95f"
+      "version": 10002,
+      "hash": "d4bce39ed5800e90d833c97ab9c5a5639525d4685a347b1c38d3ca39db381a4d"
     },
     "installer/NETWORK_FIX.bat": {
-      "version": 10001,
-      "hash": "42717d536aeb6e06a630ff831bf821085376ce0cd3fd21978e4ff3eaee186f5a"
+      "version": 10002,
+      "hash": "9582b85a1f052d67cf1bd0dbfcd009fc34eaa6fb8cafa07211e604e512126291"
     },
     "mini_mode.py": {
-      "version": 10001,
-      "hash": "033219914684c4ffa0c8d11f083fb5f170d01894998510415e3a8215724972d1"
+      "version": 10002,
+      "hash": "40cac95a169179c47ea1b8d1fa3a3a30386a422a18b4bbcb8f928af0c1db6c5d"
     },
     "publish.py": {
-      "version": 10004,
-      "hash": "346cd9a813fbda30ebcc79ac7e902e34512bf867d54723c97a58bca6cf7f74a9"
+      "version": 10005,
+      "hash": "e356ba5a9e5d84361b2f561f5b8fc3fec91281d9d72c526dc8d569b1368bc546"
     },
     "requirements.txt": {
-      "version": 10001,
-      "hash": "b00537e8f0f4fe1362de3b64737173f1a1fe8d0bbc4f41581ac34796e4158d77"
+      "version": 10002,
+      "hash": "4c4898ecf216263f8bcdb04c6acd942f4e49d1e08a0572f5902cb8929caecdde"
     },
     "server.py": {
-      "version": 10001,
-      "hash": "41cb1dedb2c51c61f09abf670e1d51d87fcbab02a0349df6cbaefb75f31caa43"
+      "version": 10002,
+      "hash": "c25796b18def649f664a79bfac88070da4c6fb6642cb7bef4a202ff40aa3fb40"
     },
     "setup_unlock_task.bat": {
-      "version": 10001,
-      "hash": "9b50c599f2711474fff76eb8c4be2b0e982ad94020142690b2b9b1e892a5a37b"
+      "version": 10002,
+      "hash": "640a62a513b58edb1b5e7e595370ca3764de7487437019e5f57d22b3bd941718"
     },
     "setup_voice_requirements.bat": {
-      "version": 10001,
-      "hash": "d29bb82f821bb5baa26a1c5fc6780469eb2580865427cbc5a14197b4216b7bcc"
+      "version": 10002,
+      "hash": "ca1f895a1bd0ed1825a155d3682f822b7eec6537a93afdafa14f78b93070f352"
     },
     "templates/index.html": {
-      "version": 10001,
-      "hash": "9738cca888487363c155fdc015558f4e07d9052f9cb1d8d111b41c79d7c53d5b"
+      "version": 10002,
+      "hash": "049ac391df1748a56f57a0abaa9e5141d727c1f60be238e33b42be577220976b"
     },
     "tests/test_router.py": {
-      "version": 10001,
-      "hash": "f56e377371b543dae3f4f8f15a535461f3ab5b9b1309a166b38d3e3ef7b842c1"
+      "version": 10002,
+      "hash": "ae7f5b5fb01c114b75955dced0d1e0c9e032a6a28cd5cb609b4652fbf1b148a2"
     },
     "tools/check_models.py": {
-      "version": 10001,
-      "hash": "6cf341224ced1817d36abcd12561f0b93cce7834a1bd9713ce97ab74d009e3e0"
+      "version": 10002,
+      "hash": "ee0cde9cb9fb95df8aefc3814108704d4b5107a5bf8ce6b04d0881c2c59862d9"
     },
     "tools/test_tts.py": {
-      "version": 10001,
-      "hash": "4c5535e7f15dee4fb1192deffe31d38096b7c2dd5ddf4f0b84db308d7d64eeef"
+      "version": 10002,
+      "hash": "9998d0c54455bc7dc45ff99438f5cb0271d74065d5c392d4ff35a04931bab056"
     },
     "ui/components.py": {
-      "version": 10001,
-      "hash": "38210f1d48ee48fbcfa7baaea7225289bc8c1eb7340df7f1120bac3817e6cb3d"
+      "version": 10002,
+      "hash": "0b54abf31ba3c9248130a4ebc6008857ef0e88a055a0002db202d97aef0fb22c"
     },
     "ui/settings_window.py": {
-      "version": 10001,
-      "hash": "a467048e3749ed6c129ae3dbc6388eb3707ea3df27ed756c2df0ea0dbd7d1185"
+      "version": 10002,
+      "hash": "7641758a4c5921247c6c808aafe4e1da8ce90d0546f77ad47785b3791c639546"
     },
     "ui/styles.py": {
-      "version": 10001,
-      "hash": "78a852cad2570a1aa18e7c25e6683e275ed9652d69c4dc4885bac296585e3341"
+      "version": 10002,
+      "hash": "b64465d17bff7f4fe46ab3151cc2e2cc03d00d2948304ebffa1b800ec64f9c2a"
     },
     "unlock_action.bat": {
-      "version": 10001,
-      "hash": "28e9935219523550d9c3cf72760a842a5923357b37c25466511e5f11c2faedc3"
+      "version": 10002,
+      "hash": "bee4db48dc7c04cbbf6bf892fab6f8299a0c7f7967f96351a3765e74cc8bb731"
     },
     "utils/audio_manager.py": {
-      "version": 10001,
-      "hash": "8258dcfdaf44f3914c61fe852e5e4e61f4dc63ba67ea4945d7003bef6fd87ab5"
+      "version": 10002,
+      "hash": "a8bb909a10a36fff63b9311d5f79423ee9f4192b55da24a9515416e98cd5100b"
     },
     "utils/localization.py": {
-      "version": 10001,
-      "hash": "70f5911c89518063e567385695ac6f97f412dd8a6078874519e9632e181d7f01"
+      "version": 10002,
+      "hash": "fd3f0f9c371267b15688c9a945279d5924f7e62271250373a1a9cbb97c0ce946"
     },
     "utils/memory_manager.py": {
-      "version": 10001,
-      "hash": "91f84f8653f0eb10ae846c84652614b80103d16ae36c8a729d4880b71de5ffc8"
+      "version": 10002,
+      "hash": "01fd02a236ae8e3c10f08ac57877edc620181b179cde16eeb1a550e3a8ffed4f"
     },
     "utils/settings_manager.py": {
-      "version": 10001,
-      "hash": "84360bf55ae9d330b1299a2145993a272903e87dc2590269207c7afc7ac2fd75"
+      "version": 10002,
+      "hash": "15facf5a7696d9744aa81100050659f11a7644d982321c059abbb38756582a46"
     },
     "utils/voice_manager.py": {
-      "version": 10001,
-      "hash": "0813c7d8652153eb41ecdf62af5584be0b0e1635f2b1b139c5871de511453421"
+      "version": 10002,
+      "hash": "c8644d4cc4825e4310683890b7134896c63f90d5be53cb19fba6a7ef907b0d65"
     },
     "voice.py": {
-      "version": 10001,
-      "hash": "2bd978942db67b0da144c8b170116c1aab9524bd9b631fef2acb7eaaa860f32f"
+      "version": 10002,
+      "hash": "0972e9f0f5c11db7a8b8a682d9fbc1472ece8f5f5c5ca0e3776188ba75ccc4bb"
     },
     "web/static/audio/tts_c8359d4740cb4db5aebd1065422d980b.mp3": {
       "version": 10001,
       "hash": "c077bc85cb8e5a31044d595083b149eb9b579a0ad41ae0c5a400b027e6263f5e"
     },
     "web/static/css/style.css": {
-      "version": 10001,
-      "hash": "381d91032bd39953b1bce519dd57cf1716dae990a656e5fa2780c22264cc2429"
+      "version": 10002,
+      "hash": "9314c1c3f22cbd9bc3a5c8a5b25e8c09d3f543875511fbe6a0a35bead1fad6c9"
     },
     "web/static/generated_images/gen_20260212_225545.jpg": {
       "version": 10001,
       "hash": "71c93a8f255032658aed1cc36682b4e7758faf50127c4cc1a1b94a26c055629e"
     },
     "web/static/js/app.js": {
-      "version": 10001,
-      "hash": "9754c00119dbb2074cf886d16bb56db4c7748f8c3e188e9417c6d3c5e4d5ae0d"
+      "version": 10002,
+      "hash": "e7b901cd1aa03986dd466728f4a81c9c0398c9ebe1118cedd7e4f26781e8f3c9"
     }
   },
   "exclude": [
