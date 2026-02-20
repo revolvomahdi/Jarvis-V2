@@ -28,6 +28,7 @@ except ImportError:
 # --- YAPILANDIRMA ---
 MANIFEST_FILE = "manifest.json"
 BACKUP_DIR = ".update_backup"
+DEFAULT_BASE_URL = "https://raw.githubusercontent.com/revolvomahdi/Jarvis-V2/main/"
 
 # Windows konsol renk destegi
 if sys.platform == "win32":
@@ -184,11 +185,8 @@ def update():
     base_url = local_manifest.get("base_url", "")
 
     if not base_url or base_url == "BURAYA_GITHUB_RAW_URL_YAZIN":
-        print_status("[X]", "base_url ayarlanmamis!", Colors.RED)
-        print(f"\n  {Colors.YELLOW}manifest.json dosyasindaki 'base_url' degerini ayarlayin.{Colors.RESET}")
-        print(f"  {Colors.DIM}Ornek: https://raw.githubusercontent.com/KULLANICI/REPO/main/{Colors.RESET}")
-        input("\nCikmak icin Enter'a basin...")
-        return
+        base_url = DEFAULT_BASE_URL
+        print_status("[*]", f"Varsayilan URL kullaniliyor: {base_url}", Colors.YELLOW)
 
     print_status("[OK]", f"Yerel manifest versiyonu: v{local_version}", Colors.GREEN)
 
