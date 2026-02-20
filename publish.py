@@ -19,7 +19,7 @@ MANIFEST_FILE = "manifest.json"
 PROJECT_NAME = "Yapay Zeka Asistani v2"
 # GitHub raw URL - repoyu olusturduktan sonra guncelleyin
 # Ornek: https://raw.githubusercontent.com/KULLANICI/REPO/main/
-BASE_URL = "BURAYA_GITHUB_RAW_URL_YAZIN"
+BASE_URL = "https://raw.githubusercontent.com/revolvomahdi/Jarvis-V2/main/"
 
 # Guncelleme disinda tutulacak dosya/klasorler
 EXCLUDE_PATTERNS = [

@@ -1,8 +1,8 @@
 {
   "project_name": "Yapay Zeka Asistani v2",
-  "manifest_version": 10002,
-  "base_url": "BURAYA_GITHUB_RAW_URL_YAZIN",
-  "last_updated": "2026-02-18 22:55:43",
+  "manifest_version": 10003,
+  "base_url": "https://raw.githubusercontent.com/revolvomahdi/Jarvis-V2/main/",
+  "last_updated": "2026-02-20 17:22:18",
   "files": {
     ".env": {
       "version": 10001,
@@ -77,8 +77,8 @@
       "hash": "033219914684c4ffa0c8d11f083fb5f170d01894998510415e3a8215724972d1"
     },
     "publish.py": {
-      "version": 10002,
-      "hash": "3cd14e35bf9fd47267b3a0fd4deea6fc6f970e12d9195629395b60dfc314a765"
+      "version": 10003,
+      "hash": "7612e3ab5dee9b9e9d72100f62a736bea8319892057beedbe5c533119865bb47"
     },
     "requirements.txt": {
       "version": 10001,
