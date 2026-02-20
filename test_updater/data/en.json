@@ -1,0 +1,50 @@
+{
+    "ui": {
+        "sidebar": {
+            "title": "NASA AI",
+            "version": "v0.4 Hybrid",
+            "chat": "Chat",
+            "research": "Research",
+            "work": "Work/PC",
+            "vision": "Vision",
+            "agent": "Autonomous Agent",
+            "settings": "SETTINGS",
+            "clear": "CLEAR MEMORY",
+            "status_ready": "System Ready",
+            "status_busy": "Processing...",
+            "status_listening": "Listening...",
+            "status_error": "Error",
+            "models": "MODULES"
+        },
+        "chat": {
+            "placeholder": "Enter a command or chat...",
+            "send": "SEND",
+            "welcome": "Systems active. Awaiting your command."
+        },
+        "settings": {
+            "title": "SETTINGS",
+            "tab_general": "General",
+            "tab_models": "Models",
+            "language": "Language",
+            "theme": "Color Theme",
+            "engine_mode": "Engine Preference",
+            "engine_api": "Cloud (API) - Fast & Smart",
+            "engine_local": "Local (Ollama) - Private & Uncensored",
+            "api_key": "Gemini API Key",
+            "audio_toggle": "Google AI Voice (TTS)",
+            "ollama_status": "Ollama Status",
+            "ollama_check": "Check Ollama",
+            "ollama_pull": "Pull / Update",
+            "ollama_placeholder": "Model Name (e.g. llama3)",
+            "ollama_missing": "Ollama Not Found!",
+            "ollama_installed": "Ollama Installed",
+            "btn_save": "Save and Restart"
+        }
+    },
+    "engine": {
+        "switch_api": "Engine: Google Gemini API (Cloud)",
+        "switch_local": "Engine: Local Ollama (Private)",
+        "downloading": "Downloading Model: {0}",
+        "download_complete": "Download Complete."
+    }
+}
