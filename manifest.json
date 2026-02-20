@@ -1,16 +1,16 @@
 {
   "project_name": "Yapay Zeka Asistani v2",
-  "manifest_version": 10003,
+  "manifest_version": 10005,
   "base_url": "https://raw.githubusercontent.com/revolvomahdi/Jarvis-V2/main/",
-  "last_updated": "2026-02-20 17:22:18",
+  "last_updated": "2026-02-20 17:27:58",
   "files": {
     ".env": {
       "version": 10001,
       "hash": "5993c8503d82edc16985113bb57ee65750ed1f585d2772c188855279fdfcd156"
     },
     ".gitignore": {
-      "version": 10001,
-      "hash": "198a583c3a7a5cba74ae3c37ba47eb903cb1f875bc5d677a2f10a3122dff14a7"
+      "version": 10002,
+      "hash": "2dd94177eaf3b50056100dcbc886ea99da2860e2b12172b3ff63308c694457c1"
     },
     "app.py": {
       "version": 10001,
@@ -77,8 +77,8 @@
       "hash": "033219914684c4ffa0c8d11f083fb5f170d01894998510415e3a8215724972d1"
     },
     "publish.py": {
-      "version": 10003,
-      "hash": "7612e3ab5dee9b9e9d72100f62a736bea8319892057beedbe5c533119865bb47"
+      "version": 10004,
+      "hash": "346cd9a813fbda30ebcc79ac7e902e34512bf867d54723c97a58bca6cf7f74a9"
     },
     "requirements.txt": {
       "version": 10001,

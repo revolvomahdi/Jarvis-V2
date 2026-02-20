@@ -40,10 +40,14 @@ EXCLUDE_PATTERNS = [
     ".git/",
     ".git\\",
     "desktop.ini",
+    ".gitattributes",
     "updater.py",
     "updater.bat",
     "manifest.json",
     # Manifest ve updater kendini guncellemez
+    # Test klasoru
+    "test_updater/",
+    "test_updater\\\\",
 ]
 
 # Sadece bu uzantilari tara (guvenlik icin)

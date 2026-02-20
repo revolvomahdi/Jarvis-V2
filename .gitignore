@@ -37,3 +37,6 @@ old/
 
 # Gemini
 .gemini/
+
+# Test
+test_updater/
