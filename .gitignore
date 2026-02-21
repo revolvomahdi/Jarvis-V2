@@ -40,3 +40,5 @@ old/
 
 # Test
 test_updater/
+
+api_keys.json

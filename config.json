@@ -3,7 +3,6 @@
     "theme": "Koyu",
     "engine_mode": "cloud",
     "cloud_provider": "api",
-    "api_key": "",
     "ollama_model": "gemini-3-pro-preview",
     "local_params": {
         "p1": "",
@@ -12,7 +11,6 @@
     },
     "theme_color": "#00d2d3",
     "api_mode": "pro",
-    "gemini_api_key": "AIzaSyClXjoAS_zd8lVoYb4VOmFTB3blFMG9s9Y",
     "local_models": {
         "chat": "llama3",
         "code": "qwen2.5-coder",
@@ -24,8 +22,9 @@
         "system_engineer": "qwen2.5-coder:7b",
         "lead_dev": "deepseek-coder:6.7b",
         "vision": "llava:v1.6",
-        "analyst": "llama3.1:8b"
+        "analyst": "llama3.1:8b",
+        "browser_planner": "qwen2.5-coder:7b",
+        "browser_vision": "llava:v1.6"
     },
-    "audio_enabled": false,
-    "elevenlabs_voice_id": "VU4rWgX2OfLkqUsPis02"
+    "audio_enabled": false
 }

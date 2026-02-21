@@ -303,6 +303,19 @@ def update():
                 timeout=300,
             )
             print_status("[OK]", "Gereksinimler basariyla kuruldu!", Colors.GREEN)
+            
+            # Playwright tarayici binary'lerini kur
+            print_status("[*]", "Playwright tarayici kuruluyor...", Colors.YELLOW)
+            try:
+                subprocess.run(
+                    [sys.executable, "-m", "playwright", "install", "chromium"],
+                    check=True,
+                    timeout=600,
+                )
+                print_status("[OK]", "Playwright Chromium basariyla kuruldu!", Colors.GREEN)
+            except Exception:
+                print_status("[!]", "Playwright kurulumu atlanildi (manuel: python -m playwright install chromium)", Colors.YELLOW)
+            
         except subprocess.CalledProcessError:
             print_status("[X]", "Gereksinimler kurulurken hata olustu!", Colors.RED)
             print_status("  ", "Manuel olarak calistirin: pip install -r requirements.txt", Colors.YELLOW)

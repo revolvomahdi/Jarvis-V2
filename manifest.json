@@ -1,24 +1,24 @@
 {
   "project_name": "Yapay Zeka Asistani v2",
-  "manifest_version": 10006,
+  "manifest_version": 10007,
   "base_url": "https://raw.githubusercontent.com/revolvomahdi/Jarvis-V2/main/",
-  "last_updated": "2026-02-20 17:34:45",
+  "last_updated": "2026-02-21 05:04:55",
   "files": {
     ".env": {
       "version": 10002,
       "hash": "09f88eba336c9fc3d30fdc3931cfec845c188151988b18154d39f3ca2dbcbd8f"
     },
     ".gitignore": {
-      "version": 10003,
-      "hash": "969b9c882173e7ad8f93819f5d4d56974e3c961526ef3f002308e21f237dbbb4"
+      "version": 10004,
+      "hash": "d2baddd051cb3e458f8ca68533e858548993eeeb9781d3ba48f391b41eabd989"
     },
     "app.py": {
       "version": 10002,
       "hash": "c1ebd44dea6b0f4b71bedfd3d49458f1d74fb8ff5b2659f9136b94273926a91d"
     },
     "config.json": {
-      "version": 10002,
-      "hash": "9da7c63c31c630eec88280c5237b559cb12e153bac744459921e0a0ea5f7c755"
+      "version": 10003,
+      "hash": "cd4df3aec893854ffef8bb29e3fa7afd2938ad094ce55122207f6e946a383109"
     },
     "data/en.json": {
       "version": 10002,
@@ -32,6 +32,14 @@
       "version": 10002,
       "hash": "22307fd140f0dbcc955d74da2970655fdd50eee31e23aca6012694985347d9b4"
     },
+    "engines/browser_agent.py": {
+      "version": 10001,
+      "hash": "e5865457bca25b745307d7cb05af1f9531daad74832d2f6092fdf10a292a79bf"
+    },
+    "engines/browser_engine.py": {
+      "version": 10001,
+      "hash": "778eba117c11d09734460c58ab0c664146613cba879c8ed55228cba44be7e8c3"
+    },
     "engines/gemini_engine.py": {
       "version": 10002,
       "hash": "8aa27f535e287cbea6dcfe45d8bf4aeb117f2283a4aa8ac294ada279bddd576e"
@@ -41,12 +49,12 @@
       "hash": "c4867e0d6ca55b05375cf6bc5a9bc0a6f9688fc83ee92212b18f4e2e4b72ec47"
     },
     "engines/local_brain.py": {
-      "version": 10002,
-      "hash": "74df37c8d617414746ebbe5deae5b2c0d382dcd4b097e320a0a630ff5bab3975"
+      "version": 10003,
+      "hash": "11c1f206c7db160a8e9ac31e804f23d27434b9a566b01f70b5c9e661b2b56d3e"
     },
     "engines/manager.py": {
-      "version": 10002,
-      "hash": "0fb76b04fcd360613f6f0334d1db663df832c183072ba118b32847822767b3e4"
+      "version": 10003,
+      "hash": "0b3e76ab9d4c181d67118c4a4b17f7fcab4fc0aa9b7f79f13530d84ec4aedaaf"
     },
     "engines/ollama_engine.py": {
       "version": 10002,
@@ -77,16 +85,16 @@
       "hash": "40cac95a169179c47ea1b8d1fa3a3a30386a422a18b4bbcb8f928af0c1db6c5d"
     },
     "publish.py": {
-      "version": 10005,
-      "hash": "e356ba5a9e5d84361b2f561f5b8fc3fec91281d9d72c526dc8d569b1368bc546"
+      "version": 10006,
+      "hash": "345d5660f8cbc08862febb987b443bd3f8fe2e66346e8f098e9fc3805019067d"
     },
     "requirements.txt": {
-      "version": 10002,
-      "hash": "4c4898ecf216263f8bcdb04c6acd942f4e49d1e08a0572f5902cb8929caecdde"
+      "version": 10003,
+      "hash": "2e25bf87f8adb18d15e81aff3f6cb774a4d9ba162057e3e30cc5fc8175b270d3"
     },
     "server.py": {
-      "version": 10002,
-      "hash": "c25796b18def649f664a79bfac88070da4c6fb6642cb7bef4a202ff40aa3fb40"
+      "version": 10003,
+      "hash": "cf8d1591e9b73a8226df57b009c1cd4f68a498b03600bfe8942895db2f7799e1"
     },
     "setup_unlock_task.bat": {
       "version": 10002,
@@ -97,8 +105,8 @@
       "hash": "ca1f895a1bd0ed1825a155d3682f822b7eec6537a93afdafa14f78b93070f352"
     },
     "templates/index.html": {
-      "version": 10002,
-      "hash": "049ac391df1748a56f57a0abaa9e5141d727c1f60be238e33b42be577220976b"
+      "version": 10003,
+      "hash": "485d91b26f21a22fe97311e5919be7009a0d307a84ad28f74911fe1e6f9cb367"
     },
     "tests/test_router.py": {
       "version": 10002,
@@ -111,6 +119,14 @@
     "tools/test_tts.py": {
       "version": 10002,
       "hash": "9998d0c54455bc7dc45ff99438f5cb0271d74065d5c392d4ff35a04931bab056"
+    },
+    "ui/__init__.py": {
+      "version": 10001,
+      "hash": "bcf7b64da13961bdfb04a9701578935ecc3aed895613a292acbc18d105effffb"
+    },
+    "ui/browser_overlay.py": {
+      "version": 10001,
+      "hash": "292f0c5b0d3bc921048535ef0e707b24da1643f1807ce1ab70547c66dbbd2928"
     },
     "ui/components.py": {
       "version": 10002,
@@ -141,8 +157,8 @@
       "hash": "01fd02a236ae8e3c10f08ac57877edc620181b179cde16eeb1a550e3a8ffed4f"
     },
     "utils/settings_manager.py": {
-      "version": 10002,
-      "hash": "15facf5a7696d9744aa81100050659f11a7644d982321c059abbb38756582a46"
+      "version": 10003,
+      "hash": "d587193f8a0fa70e84bfeac3c931ec3c576d4f459e4c3983cc9666677ebb3430"
     },
     "utils/voice_manager.py": {
       "version": 10002,
@@ -157,16 +173,16 @@
       "hash": "c077bc85cb8e5a31044d595083b149eb9b579a0ad41ae0c5a400b027e6263f5e"
     },
     "web/static/css/style.css": {
-      "version": 10002,
-      "hash": "9314c1c3f22cbd9bc3a5c8a5b25e8c09d3f543875511fbe6a0a35bead1fad6c9"
+      "version": 10003,
+      "hash": "7b8fc9e39bf2d0fe3322da0177dfd953856c73d6b2635f3d8fe022c55a255285"
     },
     "web/static/generated_images/gen_20260212_225545.jpg": {
       "version": 10001,
       "hash": "71c93a8f255032658aed1cc36682b4e7758faf50127c4cc1a1b94a26c055629e"
     },
     "web/static/js/app.js": {
-      "version": 10002,
-      "hash": "e7b901cd1aa03986dd466728f4a81c9c0398c9ebe1118cedd7e4f26781e8f3c9"
+      "version": 10003,
+      "hash": "6742e799382aa4b93565814c0489c456df816f74d7a8a95797402ef9812dcaf4"
     }
   },
   "exclude": [

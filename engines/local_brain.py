@@ -50,6 +50,8 @@ class LocalBrain:
         # ROUTING
         if intent == "IMAGE":
             return self._agent_image_department(prompt, progress_callback=progress_callback)
+        elif intent == "BROWSER":
+            return self._agent_browser(prompt)
         elif intent == "SYSTEM_REPORT":
             return self._agent_system_report(prompt)
         elif intent == "SYSTEM":
@@ -118,7 +120,8 @@ class LocalBrain:
             "SEN BİR SINIFLANDIRICI ROBOTSUN. GÖREVİN: Kullanıcının isteğini analiz edip KATEGORİLERDEN SADECE BİRİNİ SEÇMEK.\n"
             "\n"
             "KATEGORİLER:\n"
-            "- SYSTEM = Bilgisayarda İŞLEM yapmak. Uygulama açmak/kapatmak, dosya oluşturmak/silmek, web sitesi açmak, ses/parlaklık ayarı, temizlik.\n"
+            "- BROWSER = Tarayıcıda İŞLEM yapmak. Web sitesi açıp İÇERİDE arama yapmak, tıklamak, form doldurmak, video izlemek, alışveriş yapmak. Tarayıcı İÇİNDE etkileşim gerektiren her şey.\n"
+            "- SYSTEM = Bilgisayarda İŞLEM yapmak. Masaüstü uygulaması açmak/kapatmak, dosya oluşturmak/silmek, ses/parlaklık ayarı, temizlik.\n"
             "- SYSTEM_REPORT = Bilgisayar durumunu SORGULAMAK. CPU/RAM/GPU/Disk kullanımı, sıcaklık, pil, kaynak tüketimi.\n"
             "- IMAGE = Resim/görsel ÜRETMEK. Çizim, logo, illüstrasyon.\n"
             "- CODING = Kod/script YAZMAK. Programlama, debugging.\n"
@@ -131,7 +134,8 @@ class LocalBrain:
             "\n"
             "EN ÖNEMLİ KURAL - BAĞLAM ANLAMA:\n"
             "Bir uygulama ismi geçmesi her zaman SYSTEM demek DEĞİLDİR!\n"
-            "- Uygulamayı AÇMAK/KAPATMAK istiyorsa -> SYSTEM\n"
+            "- MASAÜSTÜ uygulamasını AÇMAK/KAPATMAK istiyorsa -> SYSTEM\n"
+            "- WEB SİTESİNDE bir şey yapmak istiyorsa (ara, tıkla, izle) -> BROWSER\n"
             "- Uygulama HAKKINDA genel BİLGİ soruyorsa -> CHAT\n"
             "- Uygulamanın KAYNAK tüketimini soruyorsa -> SYSTEM_REPORT\n"
             "\n"
@@ -149,16 +153,26 @@ class LocalBrain:
             "- trafik, yol, konum, nerede -> SEARCH\n"
             "AMA: 'X nedir', 'X kimdir', 'X ne işe yarar' gibi tanım soruları -> CHAT\n"
             "\n"
-            "=== SYSTEM (İŞLEM YAPMA) ÖRNEKLERİ ===\n"
-            "\"YouTube aç\" -> SYSTEM\n"
-            "\"YouTube'u aç\" -> SYSTEM\n"
-            "\"YouTube'da müzik aç\" -> SYSTEM\n"
+            "=== BROWSER (TARAYICI KONTROLÜ) ÖRNEKLERİ ===\n"
+            "\"YouTube'da Beethoven ara\" -> BROWSER\n"
+            "\"YouTube'da müzik aç\" -> BROWSER\n"
+            "\"YouTube'a git\" -> BROWSER\n"
+            "\"Google'da hava durumu ara\" -> BROWSER\n"
+            "\"Google'da X ara\" -> BROWSER\n"
+            "\"Amazon'da laptop bak\" -> BROWSER\n"
+            "\"Instagram'a gir\" -> BROWSER\n"
+            "\"Twitter'a git\" -> BROWSER\n"
+            "\"Wikipedia'da X ara\" -> BROWSER\n"
+            "\"Reddit'e gir\" -> BROWSER\n"
+            "\"Tarayıcıda X yap\" -> BROWSER\n"
+            "\"Web sitesine git\" -> BROWSER\n"
+            "\"Gmail'i aç\" -> BROWSER\n"
+            "\"WhatsApp Web aç\" -> BROWSER\n"
+            "\n"
+            "=== SYSTEM (MASAÜSTÜ İŞLEM) ÖRNEKLERİ ===\n"
             "\"Spotify aç\" -> SYSTEM\n"
             "\"Chrome'u kapat\" -> SYSTEM\n"
             "\"Discord'u başlat\" -> SYSTEM\n"
-            "\"WhatsApp aç\" -> SYSTEM\n"
-            "\"Instagram'ı aç\" -> SYSTEM\n"
-            "\"Twitter'ı aç\" -> SYSTEM\n"
             "\"Telegram'ı aç\" -> SYSTEM\n"
             "\"Hesap makinesini aç\" -> SYSTEM\n"
             "\"Not defterini aç\" -> SYSTEM\n"
@@ -167,7 +181,6 @@ class LocalBrain:
             "\"Ayarları aç\" -> SYSTEM\n"
             "\"Görev yöneticisini aç\" -> SYSTEM\n"
             "\"Kontrol panelini aç\" -> SYSTEM\n"
-            "\"Tarayıcıyı aç\" -> SYSTEM\n"
             "\"Klasör oluştur\" -> SYSTEM\n"
             "\"Masaüstüne klasör oluştur\" -> SYSTEM\n"
             "\"Dosya sil\" -> SYSTEM\n"
@@ -180,7 +193,6 @@ class LocalBrain:
             "\"Parlaklığı arttır\" -> SYSTEM\n"
             "\"WiFi'yi kapat\" -> SYSTEM\n"
             "\"Bluetooth aç\" -> SYSTEM\n"
-            "\"Google'da ara\" -> SYSTEM\n"
             "\"Müzik çal\" -> SYSTEM\n"
             "\"Uyku moduna geç\" -> SYSTEM\n"
             "\"Yeni Word belgesi oluştur\" -> SYSTEM\n"
@@ -319,7 +331,7 @@ class LocalBrain:
             "\"Mars'a gitmek mümkün mü\" -> CHAT\n"
             "\n"
             "HATIRLATMA: SADECE TEK KELİME YAZ!\n"
-            "Doğru çıktılar: SYSTEM, CHAT, IMAGE, CODING, VISION, MATH, SYSTEM_REPORT, SEARCH"
+            "Doğru çıktılar: BROWSER, SYSTEM, CHAT, IMAGE, CODING, VISION, MATH, SYSTEM_REPORT, SEARCH"
         )
         
         try:
@@ -333,13 +345,73 @@ class LocalBrain:
             content = re.sub(r'<THINK>.*?</THINK>', '', content, flags=re.DOTALL).strip()
             
             # Clean up potential extra text (e.g. "INTENT: CHAT" -> "CHAT")
-            for keyword in ["SYSTEM_REPORT", "SYSTEM", "IMAGE", "CODING", "VISION", "MATH", "SEARCH", "CHAT", "ANALYSIS"]:
+            for keyword in ["BROWSER", "SYSTEM_REPORT", "SYSTEM", "IMAGE", "CODING", "VISION", "MATH", "SEARCH", "CHAT", "ANALYSIS"]:
                 if keyword in content:
                     return keyword
             
             return "CHAT" # Default if unrecognized
         except:
             return "CHAT" # Fallback
+
+    def _agent_browser(self, prompt):
+        """BROWSER Agent: Tarayici kontrolu."""
+        try:
+            import concurrent.futures
+            
+            def run_browser_task():
+                from engines.browser_agent import BrowserAgent
+                from engines.browser_engine import BrowserEngine
+                from ui.browser_overlay import BrowserOverlay
+                
+                agent = BrowserAgent()
+                engine = BrowserEngine()
+                overlay = BrowserOverlay()
+                engine.set_overlay(overlay)
+                
+                # Plan olustur
+                plan = agent.create_plan(prompt)
+                if not plan:
+                    return "Tarayici plani olusturulamadi. Lutfen istegi daha net belirtin."
+                
+                # Tarayiciyi baslat ve plani calistir
+                engine.launch()
+                result = engine.execute_plan(plan)
+                
+                # Sonucu raporla
+                page_title = engine.get_page_title()
+                current_url = engine.get_current_url()
+                
+                steps_ok = result['steps_completed']
+                steps_total = result['total_steps']
+                
+                if result['success']:
+                    report = f"**Tarayici Gorevi Tamamlandi**\n"
+                    report += f"- Sayfa: {page_title}\n"
+                    report += f"- URL: {current_url}\n"
+                    report += f"- Adimlar: {steps_ok}/{steps_total} basarili"
+                else:
+                    # Basarisiz adimlar varsa screenshot al ve replan dene
+                    report = f"**Tarayici Gorevi Kismi Basarili**\n"
+                    report += f"- {steps_ok}/{steps_total} adim tamamlandi\n"
+                    
+                    # Hatalari listele
+                    for r in result['results']:
+                        if not r['success'] and r['error']:
+                            report += f"- Adim {r['step']}: {r['error']}\n"
+                    
+                    report += f"\nSayfa: {page_title} ({current_url})"
+                
+                # NOT: Tarayiciyi acik birak — kullanici kapatmak isterse soyleyecek
+                return report
+
+            # Playwright Sync API cannot block an existing asyncio loop.
+            # Running the entire task inside a fresh thread solves it.
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(run_browser_task)
+                return future.result()
+            
+        except Exception as e:
+            return f"Tarayici kontrol hatasi: {str(e)}"
 
     def _agent_image_department(self, prompt, progress_callback=None):
         """Image generation has been disabled"""

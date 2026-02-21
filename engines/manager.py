@@ -83,6 +83,20 @@ class EngineManager:
         # 0. Intercept System Commands (Global Access)
         msg_lower = message.lower()
         
+        # BROWSER Interception — tarayici kontrolu her modda LocalBrain'e yonlendirilir
+        browser_keywords = [
+            "youtube'da", "youtube'a", "google'da", "google'a",
+            "amazon'da", "instagram'a", "twitter'a", "wikipedia'da",
+            "reddit'e", "tarayıcıda", "tarayicida", "web sitesine",
+            "gmail", "whatsapp web",
+        ]
+        if any(x in msg_lower for x in browser_keywords):
+            try:
+                return self.local_brain._agent_browser(message)
+            except Exception as e:
+                print(f"Browser intercept error: {e}")
+                # Fallback to normal chat if browser fails
+        
         # System Status Keywords
         if any(x in msg_lower for x in ["sistem durum", "pc durum", "sistem rapor", "kaynaklar"]):
             return self.work_mode(message) # Delegate to work mode logic

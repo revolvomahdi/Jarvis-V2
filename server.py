@@ -3,7 +3,7 @@ import uvicorn
 import subprocess
 import socket
 from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles # Added
 from engines.manager import EngineManager
@@ -280,6 +280,77 @@ async def chat_yap(mesaj: str = Form(...), mod: str = Form(...)):
         print(f"Server Chat Error: {e}")
         cevap = f"Teknik bir hata oluştu: {e}"
         
+    save_message("ai", cevap)
+    return {"cevap": cevap}
+
+
+@app.post("/chat_stream")
+async def chat_stream(mesaj: str = Form(...), mod: str = Form(...)):
+    """SSE streaming endpoint - cevabi kelime kelime gonderir."""
+    try:
+        print(f"Stream: {mesaj} | Mod: {mod}")
+    except:
+        print(f"Stream: {mesaj.encode('utf-8', 'ignore')} | Mod: {mod}")
+
+    save_message("user", mesaj)
+    history = load_history()
+
+    global CURRENT_PROGRESS
+    CURRENT_PROGRESS = {"status": "idle", "percent": 0, "message": "Isleniyor..."}
+
+    try:
+        if mod == "sohbet":
+            cevap = beyin.chat_mode(mesaj, history=history, progress_callback=update_progress_callback)
+        elif mod == "is":
+            cevap = beyin.work_mode(mesaj)
+        elif mod == "arastirma":
+            cevap = beyin.research_mode(mesaj)
+        else:
+            cevap = beyin.chat_mode(mesaj, history=history, progress_callback=update_progress_callback)
+
+        if cevap is None:
+            cevap = "Uzgunum, bos cevap dondu."
+        if not isinstance(cevap, str):
+            cevap = str(cevap)
+    except Exception as e:
+        print(f"Server Stream Error: {e}")
+        cevap = f"Teknik bir hata olustu: {e}"
+
+    save_message("ai", cevap)
+
+    import time as _time
+
+    def generate():
+        words = cevap.split(" ")
+        for i, word in enumerate(words):
+            # SSE format: data: <content>\n\n
+            chunk = word if i == 0 else " " + word
+            yield f"data: {json.dumps({'text': chunk, 'done': False}, ensure_ascii=False)}\n\n"
+            _time.sleep(0.03)
+        yield f"data: {json.dumps({'text': '', 'done': True}, ensure_ascii=False)}\n\n"
+
+    return StreamingResponse(generate(), media_type="text/event-stream")
+
+
+# ==================== BROWSER CONTROL ====================
+@app.post("/browser")
+async def browser_control(mesaj: str = Form(...)):
+    """Tarayici kontrol endpoint'i."""
+    try:
+        print(f"Browser: {mesaj}")
+    except:
+        print(f"Browser: {mesaj.encode('utf-8', 'ignore')}")
+    
+    save_message("user", mesaj)
+    
+    try:
+        cevap = beyin.local_brain._agent_browser(mesaj)
+        if not cevap:
+            cevap = "Tarayici gorevi tamamlanamadi."
+    except Exception as e:
+        print(f"Browser Error: {e}")
+        cevap = f"Tarayici hatasi: {e}"
+    
     save_message("ai", cevap)
     return {"cevap": cevap}
 

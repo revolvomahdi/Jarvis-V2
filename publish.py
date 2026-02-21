@@ -44,6 +44,7 @@ EXCLUDE_PATTERNS = [
     "updater.py",
     "updater.bat",
     "manifest.json",
+    "api_keys.json",
     # Manifest ve updater kendini guncellemez
     # Test klasoru
     "test_updater/",

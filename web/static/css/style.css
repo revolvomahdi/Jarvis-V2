@@ -789,3 +789,103 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+/* === MESSAGE ACTION BAR === */
+.message-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.message-row:hover .message-actions {
+    opacity: 1;
+}
+
+.copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: #aaa;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.copy-btn:hover {
+    color: white;
+    background: rgba(255,255,255,0.12);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.copy-btn.copied {
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+}
+
+body.light-mode .copy-btn {
+    color: #666;
+    background: rgba(0,0,0,0.04);
+    border-color: rgba(0,0,0,0.1);
+}
+
+body.light-mode .copy-btn:hover {
+    color: #333;
+    background: rgba(0,0,0,0.08);
+}
+
+/* === STREAMING CURSOR === */
+.streaming-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--accent-cyan);
+    margin-left: 2px;
+    animation: blink 0.7s infinite;
+    vertical-align: text-bottom;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* === SIDEBAR SEARCH NO RESULTS === */
+.no-results {
+    padding: 15px 14px;
+    color: #666;
+    font-size: 13px;
+    text-align: center;
+    font-style: italic;
+}
+
+/* === TYPING INDICATOR === */
+.typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 8px 0;
+}
+
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    opacity: 0.4;
+    animation: typingBounce 1.4s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+}
