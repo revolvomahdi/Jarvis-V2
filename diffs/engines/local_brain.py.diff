@@ -1,0 +1,540 @@
+--- a/engines/local_brain.py
++++ b/engines/local_brain.py
+@@ -12,6 +12,7 @@
+ # Image generation disabled
+ # from engines.image_generator import ImageGenerator
+ 
++# --- FEATURE: local_brain ---
+ class LocalBrain:
+     def __init__(self):
+         self.settings = SettingsManager()
+@@ -24,30 +25,45 @@
+         if not self.agents:
+             self.agents = {
+                 "commander": "phi4-mini",
+-                "chat": "gemma2:9b",
+-                "system_engineer": "qwen2.5-coder:7b",
+-                "lead_dev": "deepseek-coder:6.7b",
+-                "vision": "llava:v1.6",
++                "chat": "qwen3.5:9b",
++                "system_engineer": "qwen3-coder:4b",
++                "lead_dev": "qwen3-coder:7b",
++                "vision": "moondream",
+                 "analyst": "llama3.1:8b",
+-                "math": "qwen2.5-math:1.5b",
+-                "painter": "gemma2:9b" # Using chat model to refine prompt
++                "math": "qwen3-math:1.5b",
++                "painter": "qwen3.5:9b" # Using chat model to refine prompt
+             }
+ 
+-    def process_request(self, prompt: str, history=None, progress_callback=None):
++    def process_request(self, prompt: str, history=None, progress_callback=None, memory_context=None):
+         """
+         Main entry point for Local Brain.
+         KOMUTAN (phi4-mini) analyzes intent with massive training prompt.
+         """
+         try:
+-            print(f"MERKEZ: İstek alındı -> '{prompt}'")
++            print(f"MERKEZ: Istek alindi -> '{prompt}'")
+         except: pass
+         
+-        # KOMUTAN (TEK YETKİLİ ROUTER)
+-        intent = self._consult_commander(prompt)
+-        try: print(f"KOMUTAN ANALİZİ: {intent}")
++        # Sohbet baglamini komutana da ver ki takip sorularini anlasin
++        # Ornek: "galatasaray bu sezon kac gol atti" -> SEARCH
++        #        "peki kac gol yedi" -> SEARCH (cunku onceki soru galatasaray hakkindaydi)
++        context_hint = ""
++        if history and len(history) >= 2:
++            # Son 3 mesaji komutana baglamsal ipucu olarak ver
++            recent_msgs = history[-4:-1]  # son mesaj haric (o zaten prompt)
++            if recent_msgs:
++                context_lines = []
++                for m in recent_msgs:
++                    role_label = "Kullanici" if m.get('role') == 'user' else "Asistan"
++                    text_preview = m.get('text', '')[:100]
++                    context_lines.append(f"{role_label}: {text_preview}")
++                context_hint = "\n".join(context_lines)
++        
++        # KOMUTAN (TEK YETKILI ROUTER)
++        intent = self._consult_commander(prompt, context_hint=context_hint)
++        try: print(f"KOMUTAN ANALIZI: {intent}")
+         except: pass
+         
+-        # ROUTING
++        # ROUTING — tum ajanlara history gonderiyoruz
+         if intent == "IMAGE":
+             return self._agent_image_department(prompt, progress_callback=progress_callback)
+         elif intent == "BROWSER":
+@@ -67,7 +83,7 @@
+         elif intent == "SEARCH":
+             return self._agent_search(prompt, history=history)
+         else:
+-            return self._agent_chat(prompt, history=history)
++            return self._agent_chat(prompt, history=history, memory_context=memory_context)
+ 
+     
+     def test_agents(self):
+@@ -109,7 +125,7 @@
+                 
+         return results
+ 
+-    def _consult_commander(self, prompt):
++    def _consult_commander(self, prompt, context_hint=""):
+         """
+         Uses phi4-mini to classify intent.
+         Output expected: STRICTLY ONE WORD INTENT
+@@ -117,12 +133,12 @@
+         commander_model = self.agents.get("commander", "phi4-mini")
+         
+         sys_prompt = (
+-            "SEN BİR SINIFLANDIRICI ROBOTSUN. GÖREVİN: Kullanıcının isteğini analiz edip KATEGORİLERDEN SADECE BİRİNİ SEÇMEK.\n"
+-            "\n"
+-            "KATEGORİLER:\n"
+-            "- BROWSER = Tarayıcıda İŞLEM yapmak. Web sitesi açıp İÇERİDE arama yapmak, tıklamak, form doldurmak, video izlemek, alışveriş yapmak. Tarayıcı İÇİNDE etkileşim gerektiren her şey.\n"
+-            "- SYSTEM = Bilgisayarda İŞLEM yapmak. Masaüstü uygulaması açmak/kapatmak, dosya oluşturmak/silmek, ses/parlaklık ayarı, temizlik.\n"
+-            "- SYSTEM_REPORT = Bilgisayar durumunu SORGULAMAK. CPU/RAM/GPU/Disk kullanımı, sıcaklık, pil, kaynak tüketimi.\n"
++            "SEN BIR SINIFLANDIRICI ROBOTSUN. GOREVIN: Kullanicinin istegini analiz edip KATEGORILERDEN SADECE BIRINI SECMEK.\n"
++            "\n"
++            "KATEGORILER:\n"
++            "- BROWSER = Tarayicida ISLEM yapmak. Web sitesi acip ICERINDE arama yapmak, tiklamak, form doldurmak, video izlemek, alisveris yapmak. Tarayici ICINDE etkilesim gerektiren her sey.\n"
++            "- SYSTEM = Bilgisayarda ISLEM yapmak. Masaustu uygulamasi acmak/kapatmak, dosya olusturmak/silmek, ses/parlaklik ayari, temizlik.\n"
++            "- SYSTEM_REPORT = Bilgisayar durumunu SORGULAMAK. CPU/RAM/GPU/Disk kullanimi, sicaklik, pil, kaynak tuketimi.\n"
+             "- IMAGE = Resim/görsel ÜRETMEK. Çizim, logo, illüstrasyon.\n"
+             "- CODING = Kod/script YAZMAK. Programlama, debugging.\n"
+             "- VISION = Ekranı GÖRMEK/okumak. Ekran görüntüsü analizi.\n"
+@@ -155,14 +171,15 @@
+             "\n"
+             "=== BROWSER (TARAYICI KONTROLÜ) ÖRNEKLERİ ===\n"
+             "\"YouTube'da Beethoven ara\" -> BROWSER\n"
+-            "\"YouTube'da müzik aç\" -> BROWSER\n"
++            "\"Youtubeda müzik aç\" -> BROWSER\n"
+             "\"YouTube'a git\" -> BROWSER\n"
+             "\"Google'da hava durumu ara\" -> BROWSER\n"
+-            "\"Google'da X ara\" -> BROWSER\n"
++            "\"Googleda arama yap\" -> BROWSER\n"
+             "\"Amazon'da laptop bak\" -> BROWSER\n"
+-            "\"Instagram'a gir\" -> BROWSER\n"
++            "\"Amazonda telefon kılıfı ara\" -> BROWSER\n"
++            "\"Instagrama gir\" -> BROWSER\n"
+             "\"Twitter'a git\" -> BROWSER\n"
+-            "\"Wikipedia'da X ara\" -> BROWSER\n"
++            "\"Wikipediada X ara\" -> BROWSER\n"
+             "\"Reddit'e gir\" -> BROWSER\n"
+             "\"Tarayıcıda X yap\" -> BROWSER\n"
+             "\"Web sitesine git\" -> BROWSER\n"
+@@ -335,9 +352,14 @@
+         )
+         
+         try:
++            # Takip sorularini anlamak icin onceki sohbet baglamini ekle
++            user_msg = prompt
++            if context_hint:
++                user_msg = f"[ONCEKI SOHBET BAGLAMI]:\n{context_hint}\n\n[YENI MESAJ]: {prompt}"
++            
+             response = ollama.chat(model=commander_model, messages=[
+                 {'role': 'system', 'content': sys_prompt},
+-                {'role': 'user', 'content': prompt}
++                {'role': 'user', 'content': user_msg}
+             ])
+             content = response['message']['content'].upper().strip()
+             
+@@ -417,16 +439,38 @@
+         """Image generation has been disabled"""
+         return "Görsel oluşturma özelliği şu an devre dışı bırakılmıştır."
+ 
++    def _format_search_results(self, results, user_search):
++        """Ollama web_search/web_fetch sonuclarini okunabilir formata cevir."""
++        from ollama import WebSearchResponse, WebFetchResponse
++        output = []
++        if isinstance(results, WebSearchResponse):
++            output.append(f'Arama sonuclari: "{user_search}":')
++            for result in results.results:
++                output.append(f'{result.title}' if result.title else f'{result.content}')
++                output.append(f'   URL: {result.url}')
++                output.append(f'   Icerik: {result.content}')
++                output.append('')
++            return '\n'.join(output).rstrip()
++        elif isinstance(results, WebFetchResponse):
++            output.append(f'Sayfa icerigi: "{user_search}":')
++            output.extend([
++                f'Baslik: {results.title}',
++                f'URL: {user_search}' if user_search else '',
++                f'Icerik: {results.content}',
++            ])
++            if results.links:
++                output.append(f'Linkler: {", ".join(results.links[:10])}')
++            output.append('')
++            return '\n'.join(output).rstrip()
++        return str(results)
++
+     def _agent_search(self, prompt, history=None):
+         """
+         SEARCH Agent: Güncel/gerçek bilgi gerektiren sorular için.
+-        1. Tarih/saat sorusu ise datetime ile cevapla
+-        2. Diğer sorular için DuckDuckGo ile ara
+-        3. Sonuçları LLM'e context olarak ver, gerçek veriye dayalı cevap üret
++        Ollama resmi web-search örneğine dayalı (think=True, tool-calling).
+         """
+-        from engines.system_tools import WebTools
++        from ollama import chat, web_search, web_fetch
+         from datetime import datetime
+-        import locale
+         
+         model = self.agents.get("chat", "llama3.1:8b")
+         msg = prompt.lower()
+@@ -451,66 +495,127 @@
+         if any(w in msg for w in ["bugün tarih", "tarih ne", "tarih kaç"]):
+             return f"Bugün **{tarih_str}**, saat {saat_str}."
+         
+-        # ===== İNTERNET ARAŞTIRMASI (DuckDuckGo) =====
++        # ===== OLLAMA TOOL-CALLING SEARCH AGENT =====
+         try:
+-            print(f"ARAMA MOTORU devrede... Sorgu: '{prompt}'")
++            print(f"OLLAMA SEARCH AGENT devrede... Sorgu: '{prompt}'")
+         except: pass
+         
+-        web = WebTools()
+-        results = web.search(prompt)
+-        
+-        if not results:
+-            # Arama başarısız olursa direkt chat'e düş
+-            return self._agent_chat(prompt, history=history)
+-        
+-        # Context oluştur
+-        context = f"GÜNCEL TARİH: {tarih_str}, Saat: {saat_str}\n\n"
+-        context += "İNTERNETTEN BULUNAN GÜNCEL VERİLER:\n"
+-        for i, r in enumerate(results[:5]):
+-            context += f"\n--- KAYNAK {i+1}: {r.get('title', '')} ---\n"
+-            context += f"{r.get('body', r.get('snippet', ''))}\n"
+-            # İlk 2 kaynağın içeriğini de oku  
+-            if i < 2:
+-                url = r.get('href', '')
+-                if url:
+-                    page_content = web.read_url(url)
+-                    if page_content:
+-                        context += f"DETAY: {page_content[:800]}\n"
+-        
+-        # LLM'e context ile soru sor
+-        search_prompt = (
+-            f"KULLANICININ SORUSU: {prompt}\n\n"
+-            f"{context}\n\n"
+-            f"GÖREV: Yukarıdaki GÜNCEL İNTERNET VERİLERİNE dayanarak kullanıcının sorusunu "
+-            f"Türkçe olarak kısa ve net cevapla. SADECE verilen verilerdeki bilgileri kullan, "
+-            f"uydurma. Kaynak belirt. Eğer veri yetersizse bunu belirt."
++        available_tools = {'web_search': web_search, 'web_fetch': web_fetch}
++        
++        sys_prompt = (
++            f"Sen JARVIS'sin. Kullanıcıya GÜNCEL ve DOĞRU bilgi veren bir arama asistanısın. "
++            f"Sana verilen araçları (web_search, web_fetch) kullanarak internetten bilgi bul. "
++            f"HER ZAMAN önce web_search aracını kullanarak arama yap. "
++            f"Bugünün tarihi: {tarih_str}, Saat: {saat_str}. "
++            f"ASLA bilgi uydurmak yok. "
++            f"Kullanıcıya 'Efendim' diye hitap et. Türkçe cevap ver.\n"
++            f"\n"
++            f"CEVAP KURALLARI:\n"
++            f"- SADECE sorulan şeye cevap ver. Uzun açıklama yapma.\n"
++            f"- Maç skoru soruluyorsa: skor, tarih, stad yeterli. Gol listesi, detay VERME.\n"
++            f"- Fiyat soruluyorsa: sadece fiyatı ver.\n"
++            f"- Hava durumu soruluyorsa: sadece derece ve durum ver.\n"
++            f"- Eğer kullanıcı isterse detay verebileceğini kısaca belirt. Örnek: 'Detayları ister misiniz efendim?'\n"
++            f"- Cevap MAKSIMUM 3-4 satır olsun. Paragraf yazma.\n"
+         )
+         
+-        sys_prompt = (
+-            "Sen JARVIS'sin. Kullanıcıya GÜNCEL ve DOĞRU bilgi veren bir arama asistanısın. "
+-            "Sana verilen internet arama sonuçlarına dayanarak cevap ver. "
+-            "ASLA bilgi uydurmak yok. Kısa, net ve bilgilendirici ol. "
+-            "Kullanıcıya 'Efendim' diye hitap et."
+-        )
++        # Mesaj geçmişini oluştur
++        messages = [{'role': 'system', 'content': sys_prompt}]
++        
++        # Takip sorulari icin onceki sohbet baglamini ekle
++        if history and len(history) > 0:
++            recent = history[-6:]
++            for m in recent:
++                role = 'user' if m['role'] == 'user' else 'assistant'
++                messages.append({'role': role, 'content': m['text']})
++        
++        # Eğer son mesaj zaten prompt değilse ekle
++        if not messages or messages[-1].get('content') != prompt:
++            messages.append({'role': 'user', 'content': prompt})
+         
+         try:
+-            # Konuşma geçmişini ekle
+-            messages = [{'role': 'system', 'content': sys_prompt}]
+-            if history:
+-                for m in history[-10:]:
+-                    role = 'user' if m['role'] == 'user' else 'assistant'
+-                    messages.append({'role': role, 'content': m['text']})
+-                # Son mesaj zaten history'de var, ayrıca search_prompt'u ekle
+-                messages.append({'role': 'user', 'content': search_prompt})
+-            else:
+-                messages.append({'role': 'user', 'content': search_prompt})
+-            
+-            response = ollama.chat(model=model, messages=messages)
+-            return response['message']['content']
++            # Tool-calling agent loop (max 5 iterasyon)
++            max_iterations = 5
++            for i in range(max_iterations):
++                response = chat(
++                    model=model,
++                    messages=messages,
++                    tools=[web_search, web_fetch],
++                    think=True
++                )
++                
++                # Thinking varsa logla
++                if hasattr(response.message, 'thinking') and response.message.thinking:
++                    try:
++                        print(f"SEARCH AGENT dusunuyor (iterasyon {i+1})...")
++                    except: pass
++                
++                if response.message.content:
++                    try:
++                        print(f"SEARCH AGENT cevap verdi (iterasyon {i+1})")
++                    except: pass
++                
++                messages.append(response.message)
++                
++                # Tool call varsa isle
++                if response.message.tool_calls:
++                    try:
++                        print(f"SEARCH AGENT tool call (iterasyon {i+1}): {[tc.function.name for tc in response.message.tool_calls]}")
++                    except: pass
++                    
++                    for tool_call in response.message.tool_calls:
++                        function_to_call = available_tools.get(tool_call.function.name)
++                        if function_to_call:
++                            args = tool_call.function.arguments
++                            result = function_to_call(**args)
++                            
++                            # Sonuclari formatla (resmi ornekteki gibi)
++                            user_search = args.get('query', '') or args.get('url', '')
++                            formatted = self._format_search_results(result, user_search)
++                            
++                            try:
++                                print(f"Tool sonucu ({tool_call.function.name}): {formatted[:200]}...")
++                            except: pass
++                            
++                            # ~2000 token siniri (resmi ornekteki gibi)
++                            messages.append({
++                                'role': 'tool',
++                                'content': formatted[:2000 * 4],
++                                'tool_name': tool_call.function.name
++                            })
++                        else:
++                            messages.append({
++                                'role': 'tool',
++                                'content': f'Tool {tool_call.function.name} bulunamadi',
++                                'tool_name': tool_call.function.name
++                            })
++                else:
++                    # Tool call yoksa donguden cik
++                    break
++            
++            # Son mesajdan cevabı al
++            final_content = response.message.content if response.message.content else ""
++            
++            if not final_content:
++                return "Arama sonuçlarını işleyemedim efendim. Lütfen sorunuzu farklı şekilde sorun."
++            
++            return final_content
++            
+         except Exception as e:
+-            return f"Arama sırasında hata oluştu: {str(e)}"
+-
+-    def _agent_chat(self, prompt, history=None):
++            error_msg = str(e)
++            try:
++                print(f"SEARCH AGENT Hata: {error_msg}")
++            except: pass
++            
++            # API key hatası için özel mesaj
++            if "api_key" in error_msg.lower() or "unauthorized" in error_msg.lower() or "401" in error_msg:
++                return ("Arama yapılamadı: Ollama API anahtarı ayarlanmamış. "
++                        "Lütfen OLLAMA_API_KEY ortam değişkenini ayarlayın. "
++                        "Anahtar almak için: https://ollama.com/settings/keys")
++            
++            return f"Arama sırasında hata oluştu: {error_msg}"
++
++    def _agent_chat(self, prompt, history=None, memory_context=None):
+         # Fallback to llama3.1 if gemma2 is not assigned
+         model = self.agents.get("chat", "llama3.1:8b") 
+         lang = self.settings.get("language", "tr")
+@@ -519,12 +624,20 @@
+             print(f"SOHBET ({model}) devrede... Lang: {lang}")
+         except: pass
+         
++        sys_context = ""
++        if memory_context:
++            if lang == "en":
++                sys_context = f"\n[USER MEMORY]: {memory_context}\n"
++            else:
++                sys_context = f"\n[HAFIZA BİLGİSİ]: {memory_context}\n"
++        
+         # 1. Base Prompt Selection
+         if lang == "en":
+-            sys_prompt = """
++            sys_prompt = f"""
+             You are JARVIS, KKSVSİGB's AI.
+             - Address the user as "Sir".
+             - Be concise, intelligent, and helpful.
++            {sys_context}
+             - NEVER state "I am JARVIS" at the start of your sentence.
+             - Just answer the user's question directly and professionally.
+             """
+@@ -536,6 +649,7 @@
+                 "- Adın JARVIS. KKSVSİGB organizasyonu için çalışıyorsun.\n"
+                 "- Zeki, profesyonel, sadık ve güvenilir bir yapay zeka asistanısın.\n"
+                 "- Kullanıcını 'Efendim' diye hitap et.\n"
++                f"{sys_context}\n"
+                 "\n"
+                 "DAVRANIS KURALLARI:\n"
+                 "1. ASLA cümleye 'Ben JARVIS'im' diyerek başlama.\n"
+@@ -606,6 +720,23 @@
+         except: pass
+         
+         # 3. Konuşma geçmişini dahil et
++        # Web search araçlarını ekle — model güncel bilgi gerektiğinde otomatik arama yapabilsin
++        from ollama import chat, web_search, web_fetch
++        
++        # System prompt'a web search yeteneği ekle
++        sys_prompt += (
++            "\n\nWEB ARAMA YETENEĞİN:\n"
++            "Sana web_search ve web_fetch araçları verildi. "
++            "Eğer kullanıcının sorusu GÜNCEL bilgi gerektiriyorsa (maç sonucu, fiyat, hava durumu, "
++            "güncel haberler, son dakika, skor, tarih/saat gibi), MUTLAKA web_search aracını kullan. "
++            "Genel kültür veya sohbet sorularında araç kullanmak zorunda değilsin.\n"
++            "\n"
++            "CEVAP UZUNLUĞU KURALI:\n"
++            "- SADECE sorulan şeye cevap ver. Gereksiz detay EKLEME.\n"
++            "- Cevap MAKSIMUM 3-4 satır olsun. Paragraf yazma.\n"
++            "- Ekstra bilgi vermek istiyorsan 'Detayları ister misiniz efendim?' diye sor.\n"
++        )
++        
+         messages = [{'role': 'system', 'content': sys_prompt}]
+         
+         if history and len(history) > 0:
+@@ -618,8 +749,88 @@
+             # History yoksa sadece mevcut prompt'u gönder
+             messages.append({'role': 'user', 'content': prompt})
+         
+-        res = ollama.chat(model=model, messages=messages)
+-        return self._format_response(res)
++        # Tool-calling agent loop (web search desteği ile)
++        available_tools = {'web_search': web_search, 'web_fetch': web_fetch}
++        max_iterations = 3  # Chat icin daha kisa limit
++        
++        try:
++            for i in range(max_iterations):
++                res = chat(
++                    model=model, 
++                    messages=messages,
++                    tools=[web_search, web_fetch],
++                    think=True
++                )
++                
++                if res.message.content:
++                    try:
++                        print(f"SOHBET cevap verdi (iterasyon {i+1})")
++                    except: pass
++                
++                messages.append(res.message)
++                
++                # Tool call varsa isle
++                if res.message.tool_calls:
++                    try:
++                        print(f"SOHBET web arama yapiyor (iterasyon {i+1}): {[tc.function.name for tc in res.message.tool_calls]}")
++                    except: pass
++                    
++                    for tool_call in res.message.tool_calls:
++                        function_to_call = available_tools.get(tool_call.function.name)
++                        if function_to_call:
++                            args = tool_call.function.arguments
++                            result = function_to_call(**args)
++                            
++                            user_search = args.get('query', '') or args.get('url', '')
++                            formatted = self._format_search_results(result, user_search)
++                            
++                            try:
++                                print(f"Tool sonucu ({tool_call.function.name}): {formatted[:150]}...")
++                            except: pass
++                            
++                            messages.append({
++                                'role': 'tool',
++                                'content': formatted[:2000 * 4],
++                                'tool_name': tool_call.function.name
++                            })
++                        else:
++                            messages.append({
++                                'role': 'tool',
++                                'content': f'Tool {tool_call.function.name} bulunamadi',
++                                'tool_name': tool_call.function.name
++                            })
++                else:
++                    # Tool call yoksa donguden cik
++                    break
++            
++            final_content = res.message.content if res.message.content else ""
++            if not final_content:
++                return "Cevap üretilemedi efendim. Lütfen tekrar deneyin."
++            
++            # Stats footer ekle
++            try:
++                total_ns = res.get('total_duration', 0) if isinstance(res, dict) else getattr(res, 'total_duration', 0)
++                eval_count = res.get('eval_count', 0) if isinstance(res, dict) else getattr(res, 'eval_count', 0)
++                eval_ns = res.get('eval_duration', 0) if isinstance(res, dict) else getattr(res, 'eval_duration', 0)
++                
++                tps_str = "N/A"
++                time_str = "N/A"
++                if total_ns and total_ns > 0:
++                    time_str = f"{total_ns / 1e9:.2f} s"
++                if eval_ns and eval_ns > 0 and eval_count and eval_count > 0:
++                    tps = eval_count / (eval_ns / 1e9)
++                    tps_str = f"{tps:.2f} t/s"
++                
++                stats = f"\n\n------------\n[Hiz: {tps_str} | Sure: {time_str}]"
++                return final_content + stats
++            except:
++                return final_content
++                
++        except Exception as e:
++            try:
++                print(f"SOHBET Hata: {e}")
++            except: pass
++            return f"Sohbet sırasında hata oluştu: {str(e)}"
+ 
+     def _format_response(self, res):
+         content = res['message']['content']
+@@ -1019,9 +1230,8 @@
+         """
+         import math
+         
+-        # Use Commander or System Engineer for fast translation
+-        # qwen2.5:1.5b is fast enough for this simple task
+-        model = self.agents.get("commander", "qwen2.5:1.5b")
++        # Qwen3-Math: Matematik icin ozel egitilmis model
++        model = self.agents.get("math", "qwen3-math:1.5b")
+         
+         sys_prompt = (
+             "Görevin: Verilen Türkçe metni TEK BİR geçerli Python matematiksel ifadesine çevirmek.\n"
+@@ -1116,3 +1326,17 @@
+     def _agent_vision(self, prompt):
+         # Vision usually requires image input. This handles text-only trigger for now.
+         return "Gözcü Modu için lütfen bir resim yükleyin veya ekran görüntüsü modunu kullanın."
++# --- END FEATURE: local_brain ---
++
++# ============================================================
++# GELISTIRICI NOTU (AI & Insan):
++# Bu projede "Feature Marker" sistemi kullanilmaktadir.
++# Yeni ozellik eklerken asagidaki formati kullanin:
++#
++#   # --- FEATURE: ozellik_adi ---
++#   ... kodlar ...
++#   # --- END FEATURE: ozellik_adi ---
++#
++# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
++# Markerlar olmadan ozellikler kayit defterine eklenmez!
++# ============================================================

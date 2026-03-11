@@ -6,6 +6,7 @@ from ui.styles import *
 from utils.settings_manager import SettingsManager
 from utils.localization import Localizer
 
+# --- FEATURE: settings_window ---
 class SettingsWindow(ctk.CTkToplevel):
     def __init__(self, parent):
         super().__init__(parent)
@@ -179,3 +180,17 @@ class SettingsWindow(ctk.CTkToplevel):
         self.settings.set("local_models", current_models)
         
         self.destroy()
+# --- END FEATURE: settings_window ---
+
+# ============================================================
+# GELISTIRICI NOTU (AI & Insan):
+# Bu projede "Feature Marker" sistemi kullanilmaktadir.
+# Yeni ozellik eklerken asagidaki formati kullanin:
+#
+#   # --- FEATURE: ozellik_adi ---
+#   ... kodlar ...
+#   # --- END FEATURE: ozellik_adi ---
+#
+# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
+# Markerlar olmadan ozellikler kayit defterine eklenmez!
+# ============================================================

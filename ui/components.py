@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from ui.styles import *
 
+# --- FEATURE: chat_bubble ---
 class ChatBubble(ctk.CTkFrame):
     def __init__(self, master, text, is_user=False, **kwargs):
         # Determine Color
@@ -42,3 +43,17 @@ class ModernButton(ctk.CTkButton):
             font=("Roboto", 13, "bold"),
             **kwargs
         )
+# --- END FEATURE: chat_bubble ---
+
+# ============================================================
+# GELISTIRICI NOTU (AI & Insan):
+# Bu projede "Feature Marker" sistemi kullanilmaktadir.
+# Yeni ozellik eklerken asagidaki formati kullanin:
+#
+#   # --- FEATURE: ozellik_adi ---
+#   ... kodlar ...
+#   # --- END FEATURE: ozellik_adi ---
+#
+# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
+# Markerlar olmadan ozellikler kayit defterine eklenmez!
+# ============================================================

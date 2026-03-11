@@ -1,0 +1,34 @@
+--- a/app.py
++++ b/app.py
+@@ -11,12 +11,14 @@
+ HEIGHT = 850
+ TITLE = "JARVIS AI - Desktop Assistant"
+ 
++# --- FEATURE: start_server ---
+ def start_server():
+     """Runs the FastAPI server in a background thread."""
+     # Ensure uvicorn logs don't clutter console too much
+     config = uvicorn.Config(fast_app, host="127.0.0.1", port=8000, log_level="error")
+     server = uvicorn.Server(config)
+     server.run()
++# --- END FEATURE: start_server ---
+ 
+ if __name__ == '__main__':
+     # 1. Start Server Thread
+@@ -34,3 +36,16 @@
+     # 4. Force Kill on Window Close
+     print("Uygulama Kapatılıyor...")
+     os._exit(0)
++
++# ============================================================
++# GELISTIRICI NOTU (AI & Insan):
++# Bu projede "Feature Marker" sistemi kullanilmaktadir.
++# Yeni ozellik eklerken asagidaki formati kullanin:
++#
++#   # --- FEATURE: ozellik_adi ---
++#   ... kodlar ...
++#   # --- END FEATURE: ozellik_adi ---
++#
++# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
++# Markerlar olmadan ozellikler kayit defterine eklenmez!
++# ============================================================

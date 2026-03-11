@@ -1,0 +1,368 @@
+{
+  "version": 1,
+  "files": {
+    "app.py": {
+      "features": [
+        {
+          "id": "start_server",
+          "start_line": 14,
+          "end_line": 21,
+          "hash": "123558ce7219d78ee5c8ac4018a54455aae2c9de57c9ba23189b075754145188",
+          "line_count": 8
+        }
+      ]
+    },
+    "mini_mode.py": {
+      "features": [
+        {
+          "id": "mini_asistan",
+          "start_line": 12,
+          "end_line": 71,
+          "hash": "301736001cc7767186fac15f08668ba5f5a272054ae923bd38f91e0aa21b3ff4",
+          "line_count": 60
+        }
+      ]
+    },
+    "publish.py": {
+      "features": [
+        {
+          "id": "should_exclude",
+          "start_line": 96,
+          "end_line": 183,
+          "hash": "98535d877a7922f7f1d5344cd204a9c7cb12c62d2e896df2cf26ab3a593b324e",
+          "line_count": 88
+        },
+        {
+          "id": "fetch_old_file_from_github",
+          "start_line": 190,
+          "end_line": 235,
+          "hash": "d6b2e4121db630067c769274d383114faddc1a75d74eea0699f5b3f40c10466c",
+          "line_count": 46
+        },
+        {
+          "id": "scan_features_in_file",
+          "start_line": 242,
+          "end_line": 319,
+          "hash": "ff3e25b4a136325b148b54cb49806804f41338aaa598b5792565143ad0aed2db",
+          "line_count": 78
+        },
+        {
+          "id": "publish",
+          "start_line": 326,
+          "end_line": 484,
+          "hash": "e338221178d56752b32d102d3f0aec8e4115bf6a2db330a177128c751f39ca04",
+          "line_count": 159
+        }
+      ]
+    },
+    "server.py": {
+      "features": [
+        {
+          "id": "load_history",
+          "start_line": 34,
+          "end_line": 78,
+          "hash": "f793b94c2059b95bcee2917dcbf85e6dd060f3a2b7c8114c8e8a9a290d5d0ef7",
+          "line_count": 45
+        },
+        {
+          "id": "get_ip",
+          "start_line": 96,
+          "end_line": 218,
+          "hash": "ab3166d54815cd21c9b5fe6f93ca1eac69b59a02f1c396924400664068e537ec",
+          "line_count": 123
+        },
+        {
+          "id": "update_progress_callback",
+          "start_line": 223,
+          "end_line": 310,
+          "hash": "33741caa20e4e8a82a43eb1123b87e170d0504998bdb884d7daa59f34f1710b2",
+          "line_count": 88
+        },
+        {
+          "id": "chat_stream",
+          "start_line": 314,
+          "end_line": 360,
+          "hash": "0a6821b66f92c48dc3ce19068f44332a6c2caa8e99528bc164684f633ccd4062",
+          "line_count": 47
+        },
+        {
+          "id": "speech_to_text",
+          "start_line": 365,
+          "end_line": 392,
+          "hash": "13cf4eec8a780409ec48ec1abe4f072d21a38c4aa3c925430c3a88e08f974431",
+          "line_count": 28
+        },
+        {
+          "id": "text_to_speech",
+          "start_line": 396,
+          "end_line": 412,
+          "hash": "ab93cbf5a39f885d439ec9b59ff3a02f6653e3d3fa5dd186a1961e8a7092cbf9",
+          "line_count": 17
+        },
+        {
+          "id": "browser_control",
+          "start_line": 416,
+          "end_line": 436,
+          "hash": "09ab6f230e3a56786f0d32ddca706e90c74841aa105cda50e6f092ae1353e011",
+          "line_count": 21
+        },
+        {
+          "id": "test_agents_endpoint",
+          "start_line": 440,
+          "end_line": 461,
+          "hash": "2e80fe84a1a72ee13f2c75db1c6efd8b8795078be386999f256fdbd197dff8d7",
+          "line_count": 22
+        },
+        {
+          "id": "kilit_ac",
+          "start_line": 465,
+          "end_line": 513,
+          "hash": "05d8ed8c62f58b4271f9347a6b4048ee55ab894c2d13542c30580bc064a92a96",
+          "line_count": 49
+        }
+      ]
+    },
+    "voice.py": {
+      "features": [
+        {
+          "id": "jarvis_voice",
+          "start_line": 17,
+          "end_line": 215,
+          "hash": "63e0dceb717d69547975a9b63d0118a8e60a70861f8cea633302df79d6c0401e",
+          "line_count": 199
+        }
+      ]
+    },
+    "engines/base.py": {
+      "features": [
+        {
+          "id": "base_engine",
+          "start_line": 3,
+          "end_line": 12,
+          "hash": "db6f86126320002d4fd01e9449313ed533897d2f03f9bd04e0b1fa87658cdf86",
+          "line_count": 10
+        }
+      ]
+    },
+    "engines/browser_agent.py": {
+      "features": [
+        {
+          "id": "browser_agent",
+          "start_line": 14,
+          "end_line": 270,
+          "hash": "07417660d886c29b4845d0bf003af9a0f6a91fe638f51b3fb24f6dc9e4d78598",
+          "line_count": 257
+        }
+      ]
+    },
+    "engines/browser_engine.py": {
+      "features": [
+        {
+          "id": "browser_engine",
+          "start_line": 21,
+          "end_line": 361,
+          "hash": "74bc2c45e9693a1f475dd811f1f4bd15883f833597284262f3e1f380a0a00645",
+          "line_count": 341
+        }
+      ]
+    },
+    "engines/gemini_engine.py": {
+      "features": [
+        {
+          "id": "gemini_engine",
+          "start_line": 6,
+          "end_line": 151,
+          "hash": "57ac3fe3efd6417017290fd70fe8dc941eb5a1bd8c316128b0a8aea621295f18",
+          "line_count": 146
+        }
+      ]
+    },
+    "engines/image_generator.py": {
+      "features": [
+        {
+          "id": "image_generator",
+          "start_line": 7,
+          "end_line": 105,
+          "hash": "6bc161083484d4f5cfe823b4062d15d24fffcd12cb4444dad89d5370e7cd8d78",
+          "line_count": 99
+        }
+      ]
+    },
+    "engines/local_brain.py": {
+      "features": [
+        {
+          "id": "local_brain",
+          "start_line": 15,
+          "end_line": 1329,
+          "hash": "f43579858c61f1f8da5669864c0ca83f0bbf274d405719c74a4173c3a262a7b5",
+          "line_count": 1315
+        }
+      ]
+    },
+    "engines/manager.py": {
+      "features": [
+        {
+          "id": "engine_manager",
+          "start_line": 16,
+          "end_line": 307,
+          "hash": "52e09bf3f412859d52b695e6d8442e113d9c81b9d5a5664087b522bc891b81c5",
+          "line_count": 292
+        }
+      ]
+    },
+    "engines/ollama_engine.py": {
+      "features": [
+        {
+          "id": "ollama_engine",
+          "start_line": 4,
+          "end_line": 55,
+          "hash": "da58af3498f58eca166381ab740a050b2fb3177dac0ea1cfe110033b51b630cb",
+          "line_count": 52
+        }
+      ]
+    },
+    "engines/system_tools.py": {
+      "features": [
+        {
+          "id": "system_manager",
+          "start_line": 10,
+          "end_line": 103,
+          "hash": "67427646c8e6d2b19e491a3a64d7e738410ab8cd3bd9e651626ede56053e1b60",
+          "line_count": 94
+        }
+      ]
+    },
+    "engines/task_manager.py": {
+      "features": [
+        {
+          "id": "task_manager",
+          "start_line": 8,
+          "end_line": 211,
+          "hash": "cd6008b2f78eac9813bfa1fa2dfbeafbc557090cfbb48316e15f1de5f71ce551",
+          "line_count": 204
+        }
+      ]
+    },
+    "tools/check_models.py": {
+      "features": [
+        {
+          "id": "test_gemini_models",
+          "start_line": 5,
+          "end_line": 35,
+          "hash": "ce27a7b70044f3bb5bfbe69f5a63ccd7e58fbe5d5398e58472237b0c1db37d7c",
+          "line_count": 31
+        }
+      ]
+    },
+    "tools/test_tts.py": {
+      "features": [
+        {
+          "id": "main",
+          "start_line": 10,
+          "end_line": 34,
+          "hash": "0a006295f8bc31115a36af1d262503546e6ca1d6be5b2d910eacd9338a8c544f",
+          "line_count": 25
+        }
+      ]
+    },
+    "ui/browser_overlay.py": {
+      "features": [
+        {
+          "id": "browser_overlay",
+          "start_line": 38,
+          "end_line": 279,
+          "hash": "3d385baa789e3a66f3c70b8d9cd801bbdb833bb1e60e96044be07e603332b6e9",
+          "line_count": 242
+        }
+      ]
+    },
+    "ui/components.py": {
+      "features": [
+        {
+          "id": "chat_bubble",
+          "start_line": 4,
+          "end_line": 46,
+          "hash": "fe13184f32b3dc4b7c56e0d45b0f9f9cfb55528aadfa85c51dd04a119da9ff9b",
+          "line_count": 43
+        }
+      ]
+    },
+    "ui/settings_window.py": {
+      "features": [
+        {
+          "id": "settings_window",
+          "start_line": 9,
+          "end_line": 183,
+          "hash": "55e0975a7955566f28cd0dfad072ce0f021c12953f164bd9469a2f63714aff85",
+          "line_count": 175
+        }
+      ]
+    },
+    "utils/audio_manager.py": {
+      "features": [
+        {
+          "id": "audio_manager",
+          "start_line": 9,
+          "end_line": 86,
+          "hash": "bc020c8c06ec9c02815e33b4eccb37b6ffe268d7da88b3467422f855ae345f73",
+          "line_count": 78
+        }
+      ]
+    },
+    "utils/localization.py": {
+      "features": [
+        {
+          "id": "localizer",
+          "start_line": 4,
+          "end_line": 34,
+          "hash": "c8f97d871d7bef6156b71b343f7b434486cf2d599175baf817f717cd11c88e5b",
+          "line_count": 31
+        }
+      ]
+    },
+    "utils/local_voice_manager.py": {
+      "features": [
+        {
+          "id": "local_voice_manager",
+          "start_line": 13,
+          "end_line": 218,
+          "hash": "f3fa9e95ef6b6a40235c868652ef291d721961a949f69813a853f68621a17db0",
+          "line_count": 206
+        }
+      ]
+    },
+    "utils/memory_manager.py": {
+      "features": [
+        {
+          "id": "memory_manager",
+          "start_line": 6,
+          "end_line": 315,
+          "hash": "9af1a38673c273ec8a8301cc020e7ffb6a2207b1f5bc2354c9380826e39c4653",
+          "line_count": 310
+        }
+      ]
+    },
+    "utils/settings_manager.py": {
+      "features": [
+        {
+          "id": "settings_manager",
+          "start_line": 4,
+          "end_line": 80,
+          "hash": "c17807e1505bff004f46c22205aac2284baa63061f7196b3cbeb1614695d870f",
+          "line_count": 77
+        }
+      ]
+    },
+    "utils/voice_manager.py": {
+      "features": [
+        {
+          "id": "voice_manager",
+          "start_line": 23,
+          "end_line": 144,
+          "hash": "2d880b1b82f4dd3f9f5f7987c970a28e6b936adf6bd5c179705e78eb140f64a7",
+          "line_count": 122
+        }
+      ]
+    }
+  }
+}

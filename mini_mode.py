@@ -9,6 +9,7 @@ from engines.manager import EngineManager
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
 
+# --- FEATURE: mini_asistan ---
 class MiniAsistan(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -67,7 +68,21 @@ class MiniAsistan(ctk.CTk):
             self.lbl_res.configure(text=disp, text_color="white")
         except Exception as e:
             self.lbl_res.configure(text=f"Error: {e}", text_color="red")
+# --- END FEATURE: mini_asistan ---
 
 if __name__ == "__main__":
     app = MiniAsistan()
     app.mainloop()
+
+# ============================================================
+# GELISTIRICI NOTU (AI & Insan):
+# Bu projede "Feature Marker" sistemi kullanilmaktadir.
+# Yeni ozellik eklerken asagidaki formati kullanin:
+#
+#   # --- FEATURE: ozellik_adi ---
+#   ... kodlar ...
+#   # --- END FEATURE: ozellik_adi ---
+#
+# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
+# Markerlar olmadan ozellikler kayit defterine eklenmez!
+# ============================================================

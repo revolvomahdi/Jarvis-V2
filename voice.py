@@ -14,6 +14,7 @@ import pyttsx3 # Fallback TTS
 TTS_VOICE = "tr-TR-AhmetNeural" # or tr-TR-EmelNeural
 WHISPER_MODEL_SIZE = "base" # tiny, base, small, medium, large
 
+# --- FEATURE: jarvis_voice ---
 class JarvisVoice:
     def __init__(self):
         self.r = sr.Recognizer()
@@ -211,6 +212,7 @@ class JarvisVoice:
     def listen(self):
         # Legacy method (not used in Push-to-Talk)
         pass
+# --- END FEATURE: jarvis_voice ---
 
 
 if __name__ == "__main__":
@@ -219,3 +221,15 @@ if __name__ == "__main__":
     voice.speak("Sistem testi bir iki üç.")
     time.sleep(5) # Wait for thread
 
+# ============================================================
+# GELISTIRICI NOTU (AI & Insan):
+# Bu projede "Feature Marker" sistemi kullanilmaktadir.
+# Yeni ozellik eklerken asagidaki formati kullanin:
+#
+#   # --- FEATURE: ozellik_adi ---
+#   ... kodlar ...
+#   # --- END FEATURE: ozellik_adi ---
+#
+# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
+# Markerlar olmadan ozellikler kayit defterine eklenmez!
+# ============================================================

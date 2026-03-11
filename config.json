@@ -1,7 +1,7 @@
 {
     "language": "tr",
     "theme": "Koyu",
-    "engine_mode": "cloud",
+    "engine_mode": "local",
     "cloud_provider": "api",
     "ollama_model": "gemini-3-pro-preview",
     "local_params": {
@@ -18,13 +18,15 @@
     },
     "local_agents": {
         "commander": "phi4-mini",
-        "chat": "gemma2:9b",
-        "system_engineer": "qwen2.5-coder:7b",
-        "lead_dev": "deepseek-coder:6.7b",
-        "vision": "llava:v1.6",
+        "chat": "qwen3.5:9b",
+        "system_engineer": "qwen3-coder:4b",
+        "lead_dev": "qwen3-coder:7b",
+        "vision": "moondream",
         "analyst": "llama3.1:8b",
+        "math": "qwen3-math:1.5b",
         "browser_planner": "qwen2.5-coder:7b",
-        "browser_vision": "llava:v1.6"
+        "browser_vision": "moondream"
     },
-    "audio_enabled": false
+    "audio_enabled": false,
+    "voice_mode": "local"
 }

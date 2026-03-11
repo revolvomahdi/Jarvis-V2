@@ -7,6 +7,7 @@ TEXT = "Merhaba, bu bir ses denemesidir."
 VOICE = "tr-TR-AhmetNeural"
 OUTPUT = "test.mp3"
 
+# --- FEATURE: main ---
 async def main():
     print(f"Generating audio with voice: {VOICE}")
     try:
@@ -30,6 +31,20 @@ async def main():
         print("Playback finished.")
     except Exception as e:
         print(f"Error playing audio: {e}")
+# --- END FEATURE: main ---
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+# ============================================================
+# GELISTIRICI NOTU (AI & Insan):
+# Bu projede "Feature Marker" sistemi kullanilmaktadir.
+# Yeni ozellik eklerken asagidaki formati kullanin:
+#
+#   # --- FEATURE: ozellik_adi ---
+#   ... kodlar ...
+#   # --- END FEATURE: ozellik_adi ---
+#
+# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
+# Markerlar olmadan ozellikler kayit defterine eklenmez!
+# ============================================================

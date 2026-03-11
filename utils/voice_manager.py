@@ -2,20 +2,43 @@ import os
 import re
 import threading
 import time
-import pygame
-from dotenv import load_dotenv
-from elevenlabs import generate, stream, set_api_key
 
-# Load Environment Variables
-load_dotenv()
+try:
+    import pygame
+except ImportError:
+    pygame = None
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
+try:
+    from elevenlabs import generate, stream, set_api_key
+    ELEVENLABS_AVAILABLE = True
+except ImportError:
+    ELEVENLABS_AVAILABLE = False
+
+# --- FEATURE: voice_manager ---
 class VoiceManager:
+    """
+    Dual-mode ses yoneticisi:
+    - voice_mode='api'   -> ElevenLabs API (cloud)
+    - voice_mode='local' -> Kokoro-ONNX (yerel, internet gerektirmez)
+    """
+    
     def __init__(self):
-        self.api_key = os.getenv("ELEVENLABS_API_KEY")
-        self.voice_id = os.getenv("ELEVENLABS_VOICE_ID", "Rachel") # Default voice
+        # API (ElevenLabs) ayarlari
+        self.api_key = os.getenv("ELEVENLABS_API_KEY", "")
+        self.voice_id = os.getenv("ELEVENLABS_VOICE_ID", "Rachel")
         self.enabled = False
+        self.voice_mode = "api"  # "api" veya "local"
         
-        if self.api_key:
+        # Local voice manager (lazy-loaded)
+        self._local_voice = None
+        
+        if self.api_key and ELEVENLABS_AVAILABLE:
             try:
                 set_api_key(self.api_key)
             except:
@@ -29,36 +52,58 @@ class VoiceManager:
             self.voice_id = voice_id
             print(f"Voice ID Updated: {voice_id}")
 
+    def set_voice_mode(self, mode: str):
+        """Ses motoru modunu degistir: 'api' veya 'local'."""
+        if mode in ("api", "local"):
+            self.voice_mode = mode
+            print(f"Voice Mode: {mode.upper()}")
+
+    def _get_local_voice(self):
+        """Local voice manager'i lazy-load et."""
+        if self._local_voice is None:
+            try:
+                from utils.local_voice_manager import LocalVoiceManager
+                self._local_voice = LocalVoiceManager()
+            except Exception as e:
+                print(f"Local Voice Manager yuklenemedi: {e}")
+        return self._local_voice
+
     def speak(self, text):
-        if not self.enabled or not self.api_key:
+        """Metni seslendir — mode'a gore API veya yerel."""
+        if not self.enabled:
+            return
+        
+        if self.voice_mode == "local":
+            self._speak_local(text)
+        else:
+            self._speak_api(text)
+
+    def _speak_local(self, text):
+        """Kokoro-ONNX ile yerel TTS."""
+        local = self._get_local_voice()
+        if local:
+            local.speak_and_play(text)
+
+    def _speak_api(self, text):
+        """ElevenLabs API ile TTS."""
+        if not self.api_key or not ELEVENLABS_AVAILABLE:
             return
 
-        # Clean text for TTS
-        # 1. Remove Code Blocks
-        clean_text = re.sub(r'```.*?```', ' Kod örneği ekranda mevcuttur. ', text, flags=re.DOTALL)
-        
-        # 2. Remove System Stats like [Hiz: ... | Sure: ...]
+        # Metni temizle
+        clean_text = re.sub(r'```.*?```', ' Kod ornegi ekranda mevcuttur. ', text, flags=re.DOTALL)
         clean_text = re.sub(r'\[Hiz:.*?\|.*?Sure:.*?\]', '', clean_text)
-        
-        # 3. Remove Image Markdown
-        clean_text = re.sub(r'!\[.*?\]\(.*?\)', ' Görsel oluşturuldu. ', clean_text)
-        
-        # 4. Remove excessive symbols
+        clean_text = re.sub(r'!\[.*?\]\(.*?\)', ' Gorsel olusturuldu. ', clean_text)
         clean_text = clean_text.replace('*', '').replace('#', '').strip()
         
-        if not clean_text: return
+        if not clean_text:
+            return
 
-        # Threaded playback to avoid blocking UI
-        threading.Thread(target=self._play_stream, args=(clean_text,), daemon=True).start()
+        threading.Thread(target=self._play_stream_api, args=(clean_text,), daemon=True).start()
 
-    def _play_stream(self, text):
+    def _play_stream_api(self, text):
+        """ElevenLabs API streaming/fallback."""
         try:
-            # WINDOWS FIX: 
-            # ElevenLabs 'stream=True' requires MPV. 
-            # If MPV is missing, we use 'stream=False' (download bytes) and play with Pygame.
-            
             try:
-                # 1. Try Streaming (preferred for speed)
                 audio_stream = generate(
                     text=text,
                     voice=self.voice_id,
@@ -67,10 +112,7 @@ class VoiceManager:
                 )
                 stream(audio_stream)
                 
-            except Exception as stream_error:
-                # print(f"Streaming Failed (likely MPV missing), falling back to download: {stream_error}")
-                
-                # 2. Fallback: Download Bytes & Pygame
+            except Exception:
                 audio_bytes = generate(
                     text=text,
                     voice=self.voice_id,
@@ -80,17 +122,18 @@ class VoiceManager:
                 temp_file = f"temp_voice_{int(time.time())}.mp3"
                 with open(temp_file, "wb") as f:
                     f.write(audio_bytes)
-                    
-                if not pygame.mixer.get_init():
-                    pygame.mixer.init()
-                    
-                pygame.mixer.music.load(temp_file)
-                pygame.mixer.music.play()
                 
-                while pygame.mixer.music.get_busy():
-                    time.sleep(0.1)
+                if pygame and not pygame.mixer.get_init():
+                    pygame.mixer.init()
+                
+                if pygame:
+                    pygame.mixer.music.load(temp_file)
+                    pygame.mixer.music.play()
                     
-                pygame.mixer.music.unload()
+                    while pygame.mixer.music.get_busy():
+                        time.sleep(0.1)
+                    
+                    pygame.mixer.music.unload()
                 
                 if os.path.exists(temp_file):
                     try: os.remove(temp_file)
@@ -98,3 +141,17 @@ class VoiceManager:
 
         except Exception as e:
             print(f"ElevenLabs TTS Error: {e}")
+# --- END FEATURE: voice_manager ---
+
+# ============================================================
+# GELISTIRICI NOTU (AI & Insan):
+# Bu projede "Feature Marker" sistemi kullanilmaktadir.
+# Yeni ozellik eklerken asagidaki formati kullanin:
+#
+#   # --- FEATURE: ozellik_adi ---
+#   ... kodlar ...
+#   # --- END FEATURE: ozellik_adi ---
+#
+# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
+# Markerlar olmadan ozellikler kayit defterine eklenmez!
+# ============================================================

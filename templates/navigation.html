@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS Navigasyon</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        :root {
+            --nav-accent: #3b82f6;
+            --nav-accent-glow: rgba(59, 130, 246, 0.4);
+            --nav-card: #1a1a1a;
+            --nav-border: rgba(255, 255, 255, 0.07);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #0f0f0f;
+            color: #e5e5e5;
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ── TOPBAR ── */
+        .nav-topbar {
+            background: #111;
+            border-bottom: 1px solid var(--nav-border);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            flex-shrink: 0;
+        }
+
+        .nav-topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .nav-topbar h1 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.4px;
+        }
+
+        .nav-badge {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 6px;
+            padding: 3px 9px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .btn-back {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #ccc;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+            transition: all 0.18s;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* ── MAIN LAYOUT ── */
+        .nav-main {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ── MAP ── */
+        #map {
+            flex: 1;
+            z-index: 1;
+        }
+
+        /* ── SIDEBAR PANEL ── */
+        .nav-sidebar {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 360px;
+            max-width: calc(100vw - 32px);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* ── SEARCH CARD ── */
+        .search-card {
+            background: rgba(17, 17, 17, 0.92);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--nav-border);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .search-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-family: inherit;
+            padding: 11px 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--nav-accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+        }
+
+        .btn-search {
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.18s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-search:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.4);
+        }
+
+        /* ── ACTION BUTTONS ── */
+        .action-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 9px 12px;
+            border-radius: 9px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            color: #bbb;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.18s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .btn-action:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-action.active {
+            background: rgba(59, 130, 246, 0.12);
+            color: #60a5fa;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        /* ── INFO CARD ── */
+        .info-card {
+            background: rgba(17, 17, 17, 0.92);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--nav-border);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            display: none;
+        }
+
+        .info-card.visible {
+            display: block;
+        }
+
+        .info-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #f0f0f0;
+        }
+
+        .info-detail {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .info-coords {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .coord-chip {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ── ROUTE CARD ── */
+        .route-card {
+            background: rgba(17, 17, 17, 0.92);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--nav-border);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            display: none;
+        }
+
+        .route-card.visible {
+            display: block;
+        }
+
+        .route-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .route-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #f0f0f0;
+        }
+
+        .route-close {
+            background: transparent;
+            border: none;
+            color: #555;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px;
+            transition: color 0.18s;
+        }
+
+        .route-close:hover {
+            color: white;
+        }
+
+        .route-stats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .route-stat {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .route-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .route-stat-label {
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .route-steps {
+            max-height: 200px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .route-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            font-size: 12px;
+            color: #aaa;
+            line-height: 1.4;
+        }
+
+        .step-num {
+            min-width: 22px;
+            height: 22px;
+            background: rgba(59, 130, 246, 0.12);
+            color: #60a5fa;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* ── LOCATION STATUS (BOTTOM) ── */
+        .location-status {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(17, 17, 17, 0.92);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--nav-border);
+            border-radius: 14px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            font-size: 13px;
+            min-width: 280px;
+        }
+
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+            animation: pulse 2s infinite;
+            flex-shrink: 0;
+        }
+
+        .pulse-dot.loading {
+            background: #f59e0b;
+            box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+        }
+
+        .pulse-dot.error {
+            background: #ef4444;
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+            animation: none;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scale(1.3);
+            }
+        }
+
+        .loc-text {
+            color: #ccc;
+            font-weight: 500;
+        }
+
+        .loc-detail {
+            color: #555;
+            font-size: 11px;
+            margin-left: auto;
+            font-family: monospace;
+        }
+
+        /* ── ZOOM CONTROLS ── */
+        .zoom-controls {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .btn-zoom {
+            width: 42px;
+            height: 42px;
+            background: rgba(17, 17, 17, 0.92);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--nav-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.18s;
+        }
+
+        .btn-zoom:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ── CUSTOM LEAFLET OVERRIDES ── */
+        .leaflet-control-zoom {
+            display: none !important;
+        }
+
+        .leaflet-control-attribution {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .nav-sidebar {
+                width: calc(100vw - 32px);
+            }
+
+            .location-status {
+                min-width: auto;
+                width: calc(100vw - 32px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOPBAR -->
+    <div class="nav-topbar">
+        <div class="nav-topbar-left">
+            <div class="nav-logo">🗺️</div>
+            <h1>Navigasyon</h1>
+            <span class="nav-badge">BETA</span>
+        </div>
+        <a href="/" class="btn-back">
+            <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round"
+                stroke-linejoin="round" height="14" width="14">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Ana Ekrana Dön
+        </a>
+    </div>
+
+    <!-- MAIN -->
+    <div class="nav-main">
+        <!-- Map -->
+        <div id="map"></div>
+
+        <!-- Sidebar Panel -->
+        <div class="nav-sidebar">
+            <!-- Search Card -->
+            <div class="search-card">
+                <div class="search-row">
+                    <input type="text" class="search-input" id="search-input" placeholder="Bir yer veya adres ara..."
+                        onkeydown="if(event.key==='Enter') searchPlace()">
+                    <button class="btn-search" onclick="searchPlace()">
+                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24"
+                            stroke-linecap="round" stroke-linejoin="round" height="14" width="14">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        Ara
+                    </button>
+                </div>
+                <div class="action-row">
+                    <button class="btn-action active" onclick="goToMyLocation()" id="btn-my-loc">
+                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24"
+                            stroke-linecap="round" stroke-linejoin="round" height="13" width="13">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        Konumum
+                    </button>
+                    <button class="btn-action" onclick="toggleSatellite()" id="btn-satellite">
+                        🛰️ Uydu
+                    </button>
+                    <button class="btn-action" onclick="toggleTraffic()" id="btn-traffic">
+                        🚗 Trafik
+                    </button>
+                </div>
+            </div>
+
+            <!-- Info Card (shows when a place is selected) -->
+            <div class="info-card" id="info-card">
+                <div class="info-title" id="info-title">—</div>
+                <div class="info-detail" id="info-detail">—</div>
+                <div class="info-coords">
+                    <div class="coord-chip" id="info-lat">Lat: —</div>
+                    <div class="coord-chip" id="info-lng">Lng: —</div>
+                </div>
+            </div>
+
+            <!-- Route Card -->
+            <div class="route-card" id="route-card">
+                <div class="route-header">
+                    <div class="route-title">📍 Rota Bilgisi</div>
+                    <button class="route-close" onclick="clearRoute()">✕</button>
+                </div>
+                <div class="route-stats" id="route-stats"></div>
+                <div class="route-steps" id="route-steps"></div>
+            </div>
+        </div>
+
+        <!-- Zoom Controls -->
+        <div class="zoom-controls">
+            <button class="btn-zoom" onclick="map.zoomIn()">+</button>
+            <button class="btn-zoom" onclick="map.zoomOut()">−</button>
+        </div>
+
+        <!-- Location Status -->
+        <div class="location-status" id="location-status">
+            <div class="pulse-dot loading" id="pulse-dot"></div>
+            <span class="loc-text" id="loc-text">Konum alınıyor...</span>
+            <span class="loc-detail" id="loc-detail"></span>
+        </div>
+    </div>
+
+    <script>
+        // ── MAP INIT ──────────────────────────────────────────────────────
+        const map = L.map('map', {
+            zoomControl: false,
+            attributionControl: false
+        }).setView([39.9334, 32.8597], 6); // Türkiye merkez
+
+        // Tile Layers
+        const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19
+        }).addTo(map);
+
+        const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19
+        });
+
+        const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        });
+
+        let currentLayer = 'dark';
+        let myMarker = null;
+        let myCircle = null;
+        let searchMarker = null;
+        let routeLine = null;
+        let myLat = null;
+        let myLng = null;
+        let watchId = null;
+
+        // Custom Icons
+        const myIcon = L.divIcon({
+            html: `<div style="
+        width: 20px; height: 20px;
+        background: #3b82f6;
+        border: 3px solid white;
+        border-radius: 50%;
+        box-shadow: 0 0 12px rgba(59,130,246,0.6);
+    "></div>`,
+            iconSize: [20, 20],
+            iconAnchor: [10, 10],
+            className: ''
+        });
+
+        const destIcon = L.divIcon({
+            html: `<div style="
+        width: 14px; height: 14px;
+        background: #ef4444;
+        border: 3px solid white;
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(239,68,68,0.5);
+    "></div>`,
+            iconSize: [14, 14],
+            iconAnchor: [7, 7],
+            className: ''
+        });
+
+        // ── GEOLOCATION ───────────────────────────────────────────────────
+        function startLocationWatch() {
+            if (!navigator.geolocation) {
+                setLocStatus('error', 'Konum desteklenmiyor');
+                return;
+            }
+
+            setLocStatus('loading', 'Konum alınıyor...');
+
+            watchId = navigator.geolocation.watchPosition(
+                (pos) => {
+                    myLat = pos.coords.latitude;
+                    myLng = pos.coords.longitude;
+                    const acc = Math.round(pos.coords.accuracy);
+
+                    updateMyPosition(myLat, myLng, acc);
+                    setLocStatus('ok', 'Konum aktif', `${myLat.toFixed(5)}, ${myLng.toFixed(5)}`);
+                },
+                (err) => {
+                    console.error(err);
+                    setLocStatus('error', 'Konum alınamadı');
+                },
+                { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+            );
+        }
+
+        function updateMyPosition(lat, lng, accuracy) {
+            if (myMarker) {
+                myMarker.setLatLng([lat, lng]);
+                myCircle.setLatLng([lat, lng]).setRadius(accuracy);
+            } else {
+                myMarker = L.marker([lat, lng], { icon: myIcon }).addTo(map)
+                    .bindPopup('<b>📍 Benim Konumum</b>');
+                myCircle = L.circle([lat, lng], {
+                    radius: accuracy,
+                    color: '#3b82f6',
+                    fillColor: '#3b82f6',
+                    fillOpacity: 0.08,
+                    weight: 1
+                }).addTo(map);
+                map.setView([lat, lng], 15);
+            }
+        }
+
+        function setLocStatus(type, text, detail = '') {
+            const dot = document.getElementById('pulse-dot');
+            const txt = document.getElementById('loc-text');
+            const det = document.getElementById('loc-detail');
+
+            dot.className = 'pulse-dot' + (type === 'loading' ? ' loading' : type === 'error' ? ' error' : '');
+            txt.textContent = text;
+            det.textContent = detail;
+        }
+
+        function goToMyLocation() {
+            if (myLat && myLng) {
+                map.flyTo([myLat, myLng], 16, { duration: 1.2 });
+            } else {
+                startLocationWatch();
+            }
+        }
+
+        // ── SEARCH ────────────────────────────────────────────────────────
+        async function searchPlace() {
+            const q = document.getElementById('search-input').value.trim();
+            if (!q) return;
+
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1&accept-language=tr`);
+                const data = await res.json();
+
+                if (!data.length) {
+                    alert('Yer bulunamadı!');
+                    return;
+                }
+
+                const place = data[0];
+                const lat = parseFloat(place.lat);
+                const lng = parseFloat(place.lon);
+
+                // Remove old marker
+                if (searchMarker) map.removeLayer(searchMarker);
+
+                // Add new marker
+                searchMarker = L.marker([lat, lng], { icon: destIcon }).addTo(map)
+                    .bindPopup(`<b>${place.display_name.split(',')[0]}</b>`)
+                    .openPopup();
+
+                map.flyTo([lat, lng], 15, { duration: 1.2 });
+
+                // Show info card
+                showInfoCard(place.display_name, lat, lng);
+
+                // Calculate route if we have location
+                if (myLat && myLng) {
+                    getRoute(myLat, myLng, lat, lng);
+                }
+
+            } catch (e) {
+                console.error(e);
+                alert('Arama hatası!');
+            }
+        }
+
+        function showInfoCard(name, lat, lng) {
+            const card = document.getElementById('info-card');
+            const parts = name.split(',');
+            document.getElementById('info-title').textContent = parts[0].trim();
+            document.getElementById('info-detail').textContent = parts.slice(1, 4).join(',').trim();
+            document.getElementById('info-lat').textContent = `Lat: ${lat.toFixed(5)}`;
+            document.getElementById('info-lng').textContent = `Lng: ${lng.toFixed(5)}`;
+            card.classList.add('visible');
+        }
+
+        // ── ROUTING (OSRM) ───────────────────────────────────────────────
+        async function getRoute(fromLat, fromLng, toLat, toLng) {
+            try {
+                const res = await fetch(
+                    `https://router.project-osrm.org/route/v1/driving/${fromLng},${fromLat};${toLng},${toLat}?overview=full&geometries=geojson&steps=true`
+                );
+                const data = await res.json();
+
+                if (!data.routes || !data.routes.length) return;
+
+                const route = data.routes[0];
+                const coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
+
+                // Remove old route
+                if (routeLine) map.removeLayer(routeLine);
+
+                // Draw route
+                routeLine = L.polyline(coords, {
+                    color: '#3b82f6',
+                    weight: 5,
+                    opacity: 0.85,
+                    smoothFactor: 1,
+                    dashArray: null
+                }).addTo(map);
+
+                // Fit bounds
+                const group = L.featureGroup([myMarker, searchMarker, routeLine]);
+                map.fitBounds(group.getBounds().pad(0.15));
+
+                // Show route card
+                showRouteCard(route);
+
+            } catch (e) {
+                console.error('Route error:', e);
+            }
+        }
+
+        function showRouteCard(route) {
+            const card = document.getElementById('route-card');
+            const statsDiv = document.getElementById('route-stats');
+            const stepsDiv = document.getElementById('route-steps');
+
+            const distKm = (route.distance / 1000).toFixed(1);
+            const durMin = Math.round(route.duration / 60);
+            const durText = durMin >= 60 ? `${Math.floor(durMin / 60)}sa ${durMin % 60}dk` : `${durMin} dk`;
+
+            statsDiv.innerHTML = `
+        <div class="route-stat">
+            <div class="route-stat-value">${distKm} km</div>
+            <div class="route-stat-label">Mesafe</div>
+        </div>
+        <div class="route-stat">
+            <div class="route-stat-value">${durText}</div>
+            <div class="route-stat-label">Tahmini Süre</div>
+        </div>
+    `;
+
+            // Steps
+            const steps = route.legs[0].steps;
+            const filteredSteps = steps.filter(s => s.maneuver && s.name);
+            stepsDiv.innerHTML = filteredSteps.slice(0, 15).map((s, i) => {
+                const stepDist = s.distance >= 1000
+                    ? `${(s.distance / 1000).toFixed(1)} km`
+                    : `${Math.round(s.distance)} m`;
+                const instruction = getManeuverText(s.maneuver.type, s.maneuver.modifier, s.name);
+                return `
+            <div class="route-step">
+                <div class="step-num">${i + 1}</div>
+                <div>${instruction} <span style="color:#555">· ${stepDist}</span></div>
+            </div>
+        `;
+            }).join('');
+
+            card.classList.add('visible');
+        }
+
+        function getManeuverText(type, modifier, name) {
+            const road = name || 'yol';
+            const modMap = {
+                'left': 'sola dön',
+                'right': 'sağa dön',
+                'slight left': 'hafifçe sola',
+                'slight right': 'hafifçe sağa',
+                'sharp left': 'keskin sola',
+                'sharp right': 'keskin sağa',
+                'straight': 'düz devam et',
+                'uturn': 'U dönüşü yap'
+            };
+            if (type === 'depart') return `<b>${road}</b> üzerinde yola çık`;
+            if (type === 'arrive') return `<b>Hedefe ulaştın!</b>`;
+            const mod = modMap[modifier] || modifier || 'devam et';
+            return `<b>${road}</b> — ${mod}`;
+        }
+
+        function clearRoute() {
+            if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
+            if (searchMarker) { map.removeLayer(searchMarker); searchMarker = null; }
+            document.getElementById('route-card').classList.remove('visible');
+            document.getElementById('info-card').classList.remove('visible');
+            if (myLat && myLng) map.flyTo([myLat, myLng], 15, { duration: 0.8 });
+        }
+
+        // ── LAYER TOGGLES ─────────────────────────────────────────────────
+        function toggleSatellite() {
+            const btn = document.getElementById('btn-satellite');
+            if (currentLayer === 'satellite') {
+                map.removeLayer(satelliteLayer);
+                darkLayer.addTo(map);
+                currentLayer = 'dark';
+                btn.classList.remove('active');
+            } else {
+                map.removeLayer(darkLayer);
+                map.removeLayer(streetLayer);
+                satelliteLayer.addTo(map);
+                currentLayer = 'satellite';
+                btn.classList.add('active');
+                document.getElementById('btn-traffic').classList.remove('active');
+            }
+        }
+
+        function toggleTraffic() {
+            const btn = document.getElementById('btn-traffic');
+            if (currentLayer === 'street') {
+                map.removeLayer(streetLayer);
+                darkLayer.addTo(map);
+                currentLayer = 'dark';
+                btn.classList.remove('active');
+            } else {
+                map.removeLayer(darkLayer);
+                map.removeLayer(satelliteLayer);
+                streetLayer.addTo(map);
+                currentLayer = 'street';
+                btn.classList.add('active');
+                document.getElementById('btn-satellite').classList.remove('active');
+            }
+        }
+
+        // ── CLICK ON MAP ──────────────────────────────────────────────────
+        map.on('click', async function (e) {
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+
+            // Reverse geocode
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=tr`);
+                const data = await res.json();
+
+                if (searchMarker) map.removeLayer(searchMarker);
+                searchMarker = L.marker([lat, lng], { icon: destIcon }).addTo(map)
+                    .bindPopup(`<b>${data.display_name?.split(',')[0] || 'Seçilen Konum'}</b>`)
+                    .openPopup();
+
+                showInfoCard(data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`, lat, lng);
+
+                if (myLat && myLng) {
+                    getRoute(myLat, myLng, lat, lng);
+                }
+            } catch (e) {
+                if (searchMarker) map.removeLayer(searchMarker);
+                searchMarker = L.marker([lat, lng], { icon: destIcon }).addTo(map);
+                showInfoCard(`${lat.toFixed(5)}, ${lng.toFixed(5)}`, lat, lng);
+            }
+        });
+
+        // ── INIT ──────────────────────────────────────────────────────────
+        startLocationWatch();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,28 @@
+--- a/engines/ollama_engine.py
++++ b/engines/ollama_engine.py
+@@ -1,6 +1,7 @@
+ import ollama
+ from .base import BaseEngine
+ 
++# --- FEATURE: ollama_engine ---
+ class OllamaEngine(BaseEngine):
+     def __init__(self, model_name="llama3"):
+         self.model_name = model_name
+@@ -51,3 +52,17 @@
+     def generate_stream(self, prompt, system_instruction=None, history=[], images=[]):
+         # Implementation for stream if needed
+         pass
++# --- END FEATURE: ollama_engine ---
++
++# ============================================================
++# GELISTIRICI NOTU (AI & Insan):
++# Bu projede "Feature Marker" sistemi kullanilmaktadir.
++# Yeni ozellik eklerken asagidaki formati kullanin:
++#
++#   # --- FEATURE: ozellik_adi ---
++#   ... kodlar ...
++#   # --- END FEATURE: ozellik_adi ---
++#
++# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
++# Markerlar olmadan ozellikler kayit defterine eklenmez!
++# ============================================================

@@ -28,6 +28,7 @@ data/chat_history.json
 data/long_memory.json
 data/user_profile.json
 data/archives/
+data/models/
 
 # Eski dosyalar
 old/

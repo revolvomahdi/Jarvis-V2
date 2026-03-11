@@ -35,6 +35,7 @@ if sys.platform == "win32":
     kernel32 = ctypes.windll.kernel32
 
 
+# --- FEATURE: browser_overlay ---
 def bezier_points(start, end, steps=30):
     """
     Bezier curve ile iki nokta arasi yumusak hareket.
@@ -275,3 +276,17 @@ class BrowserOverlay:
         b = max(0, min(255, b))
         
         return f"#{r:02x}{g:02x}{b:02x}"
+# --- END FEATURE: browser_overlay ---
+
+# ============================================================
+# GELISTIRICI NOTU (AI & Insan):
+# Bu projede "Feature Marker" sistemi kullanilmaktadir.
+# Yeni ozellik eklerken asagidaki formati kullanin:
+#
+#   # --- FEATURE: ozellik_adi ---
+#   ... kodlar ...
+#   # --- END FEATURE: ozellik_adi ---
+#
+# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
+# Markerlar olmadan ozellikler kayit defterine eklenmez!
+# ============================================================

@@ -1,0 +1,28 @@
+--- a/utils/audio_manager.py
++++ b/utils/audio_manager.py
+@@ -6,6 +6,7 @@
+ import json
+ import google.generativeai as genai
+ 
++# --- FEATURE: audio_manager ---
+ class AudioManager:
+     def __init__(self, api_key=None):
+         self.api_key = api_key
+@@ -82,3 +83,17 @@
+ 
+     def stop(self):
+         pygame.mixer.music.stop()
++# --- END FEATURE: audio_manager ---
++
++# ============================================================
++# GELISTIRICI NOTU (AI & Insan):
++# Bu projede "Feature Marker" sistemi kullanilmaktadir.
++# Yeni ozellik eklerken asagidaki formati kullanin:
++#
++#   # --- FEATURE: ozellik_adi ---
++#   ... kodlar ...
++#   # --- END FEATURE: ozellik_adi ---
++#
++# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
++# Markerlar olmadan ozellikler kayit defterine eklenmez!
++# ============================================================

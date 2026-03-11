@@ -1,0 +1,232 @@
+--- a/server.py
++++ b/server.py
+@@ -1,9 +1,16 @@
++# .env dosyasini yukle (OLLAMA_API_KEY vb.) — tum importlardan ONCE olmali
++try:
++    from dotenv import load_dotenv
++    load_dotenv()
++except ImportError:
++    pass  # python-dotenv yoksa sessizce devam et
++
+ import os
+ import uvicorn
+ import subprocess
+ import socket
+-from fastapi import FastAPI, Request, Form
+-from fastapi.responses import HTMLResponse, StreamingResponse
++from fastapi import FastAPI, Request, Form, UploadFile, File
++from fastapi.responses import HTMLResponse, StreamingResponse, FileResponse, JSONResponse
+ from fastapi.templating import Jinja2Templates
+ from fastapi.staticfiles import StaticFiles # Added
+ from engines.manager import EngineManager
+@@ -24,6 +31,7 @@
+ 
+ HISTORY_FILE = "data/chat_history.json"
+ 
++# --- FEATURE: load_history ---
+ def load_history():
+     if os.path.exists(HISTORY_FILE):
+         try:
+@@ -67,6 +75,7 @@
+                 json.dump(data, f_out, ensure_ascii=False, indent=2)
+     except Exception as e:
+         print(f"Archive Error: {e}")
++# --- END FEATURE: load_history ---
+ 
+ 
+ # Mount Static Files (CSS, JS, Images)
+@@ -84,6 +93,7 @@
+ 
+ templates = Jinja2Templates(directory="templates")
+ 
++# --- FEATURE: get_ip ---
+ def get_ip():
+     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+     try: s.connect(('10.255.255.255', 1)); IP = s.getsockname()[0]
+@@ -94,6 +104,11 @@
+ @app.get("/", response_class=HTMLResponse)
+ async def anasayfa(request: Request):
+     return templates.TemplateResponse("index.html", {"request": request})
++
++@app.get("/navigation", response_class=HTMLResponse)
++async def navigation_page(request: Request):
++    """Navigasyon / Harita sayfasi."""
++    return templates.TemplateResponse("navigation.html", {"request": request})
+ 
+ @app.get("/favicon.ico")
+ async def favicon():
+@@ -161,7 +176,12 @@
+ @app.get("/get_settings")
+ async def get_settings():
+     from utils.settings_manager import SettingsManager
+-    return SettingsManager().config
++    sm = SettingsManager()
++    # Config + api keys merged response
++    result = dict(sm.config)
++    # Inject voice_id from api_keys.json so frontend can restore it
++    result["elevenlabs_voice_id"] = sm.get("elevenlabs_voice_id", "")
++    return result
+ 
+ @app.post("/save_settings")
+ async def save_settings(
+@@ -169,13 +189,15 @@
+     language: str = Form(...),
+     model: str = Form(...), # cloud vs local
+     voice: str = Form("false"), # Voice Toggle
+-    voice_id: str = Form("") # New: Voice ID
++    voice_id: str = Form(""), # New: Voice ID
++    voice_mode: str = Form("api") # api vs local (Kokoro)
+ ):
+     from utils.settings_manager import SettingsManager
+     sm = SettingsManager()
+     sm.set("theme", theme)
+     sm.set("language", language)
+     sm.set("engine_mode", model)
++    sm.set("voice_mode", voice_mode)
+     
+     # Parse voice boolean
+     voice_bool = (voice.lower() == 'true')
+@@ -188,14 +210,17 @@
+     beyin.set_execution_mode(model)
+     if hasattr(beyin, 'voice'):
+         beyin.voice.set_enabled(voice_bool)
++        beyin.voice.set_voice_mode(voice_mode)
+         if voice_id:
+             beyin.voice.set_voice_id(voice_id)
+         
+     return {"status": "saved"}
++# --- END FEATURE: get_ip ---
+ 
+ # Global Progress State
+ CURRENT_PROGRESS = {"status": "idle", "percent": 0, "message": ""}
+ 
++# --- FEATURE: update_progress_callback ---
+ def update_progress_callback(percent, message=""):
+     global CURRENT_PROGRESS
+     CURRENT_PROGRESS["status"] = "generating" if percent < 100 else "idle"
+@@ -282,9 +307,11 @@
+         
+     save_message("ai", cevap)
+     return {"cevap": cevap}
++# --- END FEATURE: update_progress_callback ---
+ 
+ 
+ @app.post("/chat_stream")
++# --- FEATURE: chat_stream ---
+ async def chat_stream(mesaj: str = Form(...), mod: str = Form(...)):
+     """SSE streaming endpoint - cevabi kelime kelime gonderir."""
+     try:
+@@ -330,10 +357,63 @@
+         yield f"data: {json.dumps({'text': '', 'done': True}, ensure_ascii=False)}\n\n"
+ 
+     return StreamingResponse(generate(), media_type="text/event-stream")
+-
++# --- END FEATURE: chat_stream ---
++
++
++# ==================== SPEECH-TO-TEXT (STT) ====================
++@app.post("/stt")
++# --- FEATURE: speech_to_text ---
++async def speech_to_text(audio: UploadFile = File(...)):
++    """Ses dosyasini metne cevir (Faster-Whisper)."""
++    import tempfile
++    try:
++        # Dosyayi gecici olarak kaydet
++        suffix = ".webm" if "webm" in (audio.content_type or "") else ".wav"
++        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix, dir="data/temp_audio") as tmp:
++            content = await audio.read()
++            tmp.write(content)
++            tmp_path = tmp.name
++        
++        # STT ile metne cevir
++        from utils.local_voice_manager import LocalVoiceManager
++        if not hasattr(speech_to_text, '_stt'):
++            speech_to_text._stt = LocalVoiceManager()
++        
++        text = speech_to_text._stt.transcribe(tmp_path)
++        
++        # Temp dosyayi temizle
++        try: os.remove(tmp_path)
++        except: pass
++        
++        return JSONResponse({"text": text, "status": "ok"})
++    except Exception as e:
++        print(f"STT Error: {e}")
++        return JSONResponse({"text": "", "status": "error", "message": str(e)})
++# --- END FEATURE: speech_to_text ---
++
++# ==================== TEXT-TO-SPEECH (TTS) ====================
++@app.post("/tts")
++# --- FEATURE: text_to_speech ---
++async def text_to_speech(text: str = Form(...)):
++    """Metni ses dosyasina cevir (Kokoro-ONNX)."""
++    try:
++        from utils.local_voice_manager import LocalVoiceManager
++        if not hasattr(text_to_speech, '_tts'):
++            text_to_speech._tts = LocalVoiceManager()
++        
++        filepath = text_to_speech._tts.speak(text)
++        if filepath and os.path.exists(filepath):
++            return FileResponse(filepath, media_type="audio/wav", filename="speech.wav")
++        else:
++            return JSONResponse({"status": "error", "message": "Ses uretilemedi"})
++    except Exception as e:
++        print(f"TTS Error: {e}")
++        return JSONResponse({"status": "error", "message": str(e)})
++# --- END FEATURE: text_to_speech ---
+ 
+ # ==================== BROWSER CONTROL ====================
+ @app.post("/browser")
++# --- FEATURE: browser_control ---
+ async def browser_control(mesaj: str = Form(...)):
+     """Tarayici kontrol endpoint'i."""
+     try:
+@@ -353,9 +433,11 @@
+     
+     save_message("ai", cevap)
+     return {"cevap": cevap}
++# --- END FEATURE: browser_control ---
+ 
+ 
+ @app.get("/system/test_agents")
++# --- FEATURE: test_agents_endpoint ---
+ async def test_agents_endpoint():
+     try:
+         # Check Mode
+@@ -376,9 +458,11 @@
+             
+     except Exception as e:
+         return [{"agent": "SERVER ERROR", "status": "FAIL", "msg": str(e)}]
++# --- END FEATURE: test_agents_endpoint ---
+ 
+ 
+ @app.post("/unlock")
++# --- FEATURE: kilit_ac ---
+ async def kilit_ac():
+     print("KILIT ACILIYOR (TASK SCHEDULER MODE)...")
+     komut = 'schtasks /Run /TN "NASA_Unlock"'
+@@ -426,6 +510,7 @@
+         
+     threading.Thread(target=restart_process).start()
+     return {"status": "restarting"}
++# --- END FEATURE: kilit_ac ---
+ 
+ if __name__ == "__main__":
+     ip = get_ip()
+@@ -433,3 +518,16 @@
+     print(f"http://{ip}:8000")
+     print(f"Bu pencereyi kapatmayin.\n")
+     uvicorn.run(app, host="0.0.0.0", port=8000)
++
++# ============================================================
++# GELISTIRICI NOTU (AI & Insan):
++# Bu projede "Feature Marker" sistemi kullanilmaktadir.
++# Yeni ozellik eklerken asagidaki formati kullanin:
++#
++#   # --- FEATURE: ozellik_adi ---
++#   ... kodlar ...
++#   # --- END FEATURE: ozellik_adi ---
++#
++# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
++# Markerlar olmadan ozellikler kayit defterine eklenmez!
++# ============================================================

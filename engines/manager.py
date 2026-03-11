@@ -13,6 +13,7 @@ import time
 
 from utils.memory_manager import MemoryManager
 
+# --- FEATURE: engine_manager ---
 class EngineManager:
     def __init__(self):
         self.settings = SettingsManager()
@@ -85,10 +86,15 @@ class EngineManager:
         
         # BROWSER Interception — tarayici kontrolu her modda LocalBrain'e yonlendirilir
         browser_keywords = [
-            "youtube'da", "youtube'a", "google'da", "google'a",
-            "amazon'da", "instagram'a", "twitter'a", "wikipedia'da",
-            "reddit'e", "tarayıcıda", "tarayicida", "web sitesine",
-            "gmail", "whatsapp web",
+            "youtube'da", "youtube'a", "youtube'u", "youtubeu", "youtube'dan",
+            "google'da", "google'a", "google'u", "googleu", "google'dan",
+            "amazon'da", "amazon'u", "amazonu", "amazon'a", "amazon'dan",
+            "instagram'a", "instagram'ı", "instagramı", "instagram'dan",
+            "twitter'a", "twitter'ı", "twitterı", "twitter'dan",
+            "wikipedia'da", "reddit'e", "tarayıcıda", "tarayicida", "web sitesine",
+            "gmail", "whatsapp web", "amazonda", "youtubeda", 
+            "googleda", "twitterda", "instagramda", "wikipediada",
+            "netflix'te", "netflixte", "netflix'i"
         ]
         if any(x in msg_lower for x in browser_keywords):
             try:
@@ -127,9 +133,9 @@ class EngineManager:
         # Use LocalBrain if mode is local
         if self.mode == "local":
             try:
-                # We need to pass memory context to local brain somehow, or inject it into prompt
-                full_prompt = f"{sys_context}\n{message}"
-                response = self.local_brain.process_request(full_prompt, history=history, progress_callback=progress_callback)
+                # Hafiza bilgisi artik sadece chat ajaninda enjekte ediliyor.
+                # Komutana gereksiz hafiza bilgisi gondermek sınıflandırmayı bozuyor.
+                response = self.local_brain.process_request(message, history=history, progress_callback=progress_callback, memory_context=memory_context)
                 
                 # Check for empty response
                 if not response:
@@ -298,3 +304,17 @@ class EngineManager:
             return "YouTube varsayılan tarayıcıda açılıyor..."
             
         return self.chat_mode(message)
+# --- END FEATURE: engine_manager ---
+
+# ============================================================
+# GELISTIRICI NOTU (AI & Insan):
+# Bu projede "Feature Marker" sistemi kullanilmaktadir.
+# Yeni ozellik eklerken asagidaki formati kullanin:
+#
+#   # --- FEATURE: ozellik_adi ---
+#   ... kodlar ...
+#   # --- END FEATURE: ozellik_adi ---
+#
+# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
+# Markerlar olmadan ozellikler kayit defterine eklenmez!
+# ============================================================

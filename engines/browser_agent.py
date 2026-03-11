@@ -11,6 +11,7 @@ import base64
 from utils.settings_manager import SettingsManager
 
 
+# --- FEATURE: browser_agent ---
 class BrowserAgent:
     """Kullanici istegini tarayici aksiyonlarina ceviren LLM agent."""
     
@@ -195,8 +196,35 @@ Sadece JSON array dondur:"""
                 plan.append({"action": "type", "selector": "textarea[name='q']", "text": search_term})
                 plan.append({"action": "press", "key": "Enter"})
         
-        # Genel URL
-        elif any(x in req for x in ["gir", "git", "ac"]):
+        # Amazon
+        elif "amazon" in req:
+            plan.append({"action": "goto", "url": "https://www.amazon.com.tr"})
+            plan.append({"action": "wait", "seconds": 2})
+            
+            search_term = self._extract_search_term(req, "amazon")
+            if search_term:
+                plan.append({"action": "click", "selector": "input#twotabsearchtextbox"})
+                plan.append({"action": "type", "selector": "input#twotabsearchtextbox", "text": search_term})
+                plan.append({"action": "press", "key": "Enter"})
+                plan.append({"action": "wait", "seconds": 2})
+
+        # Instagram
+        elif "instagram" in req:
+            plan.append({"action": "goto", "url": "https://www.instagram.com"})
+            plan.append({"action": "wait", "seconds": 3})
+
+        # Twitter
+        elif "twitter" in req or " x " in req:
+            plan.append({"action": "goto", "url": "https://x.com"})
+            plan.append({"action": "wait", "seconds": 3})
+            
+        # Netflix
+        elif "netflix" in req:
+            plan.append({"action": "goto", "url": "https://www.netflix.com"})
+            plan.append({"action": "wait", "seconds": 3})
+            
+        # Genel URL (www.x.com gibi)
+        elif any(x in req for x in ["gir", "git", "ac", "aç"]):
             # URL cikar
             url_match = re.search(r'([\w]+\.[\w]+(?:\.[\w]+)*)', req)
             if url_match:
@@ -208,7 +236,13 @@ Sadece JSON array dondur:"""
         
         if not plan:
             # En basit fallback — Google'da ara
-            plan.append({"action": "goto", "url": f"https://www.google.com/search?q={user_request}"})
+            # Eger sadece "amazon" denip yukaridaki bloklara girmediyse (orn "amazon'u aç") vs.
+            if "amazon" in req:
+                plan.append({"action": "goto", "url": "https://www.amazon.com.tr"})
+            elif "youtube" in req:
+                plan.append({"action": "goto", "url": "https://www.youtube.com"})
+            else:
+                plan.append({"action": "goto", "url": f"https://www.google.com/search?q={user_request}"})
             plan.append({"action": "wait", "seconds": 2})
         
         return plan
@@ -233,3 +267,17 @@ Sadece JSON array dondur:"""
                     return term
         
         return None
+# --- END FEATURE: browser_agent ---
+
+# ============================================================
+# GELISTIRICI NOTU (AI & Insan):
+# Bu projede "Feature Marker" sistemi kullanilmaktadir.
+# Yeni ozellik eklerken asagidaki formati kullanin:
+#
+#   # --- FEATURE: ozellik_adi ---
+#   ... kodlar ...
+#   # --- END FEATURE: ozellik_adi ---
+#
+# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
+# Markerlar olmadan ozellikler kayit defterine eklenmez!
+# ============================================================

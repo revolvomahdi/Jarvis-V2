@@ -18,6 +18,7 @@ except ImportError:
     PLAYWRIGHT_AVAILABLE = False
 
 
+# --- FEATURE: browser_engine ---
 def ensure_playwright_installed():
     """Playwright ve tarayici binary'lerini otomatik yukler."""
     global PLAYWRIGHT_AVAILABLE
@@ -357,3 +358,17 @@ class BrowserEngine:
             self.playwright = None
             self.is_active = False
             print("[BROWSER] Tarayici kapatildi.")
+# --- END FEATURE: browser_engine ---
+
+# ============================================================
+# GELISTIRICI NOTU (AI & Insan):
+# Bu projede "Feature Marker" sistemi kullanilmaktadir.
+# Yeni ozellik eklerken asagidaki formati kullanin:
+#
+#   # --- FEATURE: ozellik_adi ---
+#   ... kodlar ...
+#   # --- END FEATURE: ozellik_adi ---
+#
+# Bu markerlar otomatik guncelleme ve birlestirme icin gereklidir.
+# Markerlar olmadan ozellikler kayit defterine eklenmez!
+# ============================================================
