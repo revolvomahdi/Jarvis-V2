@@ -81,43 +81,9 @@ class EngineManager:
             pass # Muted
 
     def chat_mode(self, message, history=None, progress_callback=None):
-        # 0. Intercept System Commands (Global Access)
-        msg_lower = message.lower()
-        
-        # BROWSER Interception — tarayici kontrolu her modda LocalBrain'e yonlendirilir
-        browser_keywords = [
-            "youtube'da", "youtube'a", "youtube'u", "youtubeu", "youtube'dan",
-            "google'da", "google'a", "google'u", "googleu", "google'dan",
-            "amazon'da", "amazon'u", "amazonu", "amazon'a", "amazon'dan",
-            "instagram'a", "instagram'ı", "instagramı", "instagram'dan",
-            "twitter'a", "twitter'ı", "twitterı", "twitter'dan",
-            "wikipedia'da", "reddit'e", "tarayıcıda", "tarayicida", "web sitesine",
-            "gmail", "whatsapp web", "amazonda", "youtubeda", 
-            "googleda", "twitterda", "instagramda", "wikipediada",
-            "netflix'te", "netflixte", "netflix'i"
-        ]
-        if any(x in msg_lower for x in browser_keywords):
-            try:
-                return self.local_brain._agent_browser(message)
-            except Exception as e:
-                print(f"Browser intercept error: {e}")
-                # Fallback to normal chat if browser fails
-        
-        # System Status Keywords
-        if any(x in msg_lower for x in ["sistem durum", "pc durum", "sistem rapor", "kaynaklar"]):
-            return self.work_mode(message) # Delegate to work mode logic
-            
-        # Optimization Keywords
-        if any(x in msg_lower for x in ["ram temizle", "oyun modu", "hızlandır"]):
-            return self.work_mode(message)
-            
-        # Resource Hog Keywords
-        if any(x in msg_lower for x in ["ne kasıyor", "ram sömüren", "işlemci sömüren"]):
-            return self.work_mode(message)
-            
-        # Disk Usage Interception
-        if any(x in msg_lower for x in ["diskini ne dolduruyor", "en büyük dosyalar", "yer kaplayanlar", "hafıza nerede"]):
-            return self.work_mode(message)
+        # Tum routing kararlarini KOMUTAN (LLM) verir.
+        # Keyword-based interception KALDIRILDI — cunku yanlış yonlendirmelere neden oluyordu.
+        # Ornek: "YouTube kac yilinda kuruldu" → BROWSER'a gidiyordu (yanlis), CHAT olmali.
             
         # Scan Input for Memory
         # (This is a simplified approach, ideally handled async)

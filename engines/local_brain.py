@@ -136,219 +136,134 @@ class LocalBrain:
             "SEN BIR SINIFLANDIRICI ROBOTSUN. GOREVIN: Kullanicinin istegini analiz edip KATEGORILERDEN SADECE BIRINI SECMEK.\n"
             "\n"
             "KATEGORILER:\n"
-            "- BROWSER = Tarayicida ISLEM yapmak. Web sitesi acip ICERINDE arama yapmak, tiklamak, form doldurmak, video izlemek, alisveris yapmak. Tarayici ICINDE etkilesim gerektiren her sey.\n"
-            "- SYSTEM = Bilgisayarda ISLEM yapmak. Masaustu uygulamasi acmak/kapatmak, dosya olusturmak/silmek, ses/parlaklik ayari, temizlik.\n"
-            "- SYSTEM_REPORT = Bilgisayar durumunu SORGULAMAK. CPU/RAM/GPU/Disk kullanimi, sicaklik, pil, kaynak tuketimi.\n"
-            "- IMAGE = Resim/görsel ÜRETMEK. Çizim, logo, illüstrasyon.\n"
-            "- CODING = Kod/script YAZMAK. Programlama, debugging.\n"
-            "- VISION = Ekranı GÖRMEK/okumak. Ekran görüntüsü analizi.\n"
-            "- MATH = Matematiksel HESAPLAMA yapmak.\n"
-            "- SEARCH = GÜNCEL/GERÇEK bilgi gerektiren sorular. Hava durumu, döviz kuru, fiyat, tarih/saat, konum, yol tarifi, güncel haberler, canlı sonuçlar, nüfus, deprem bilgisi.\n"
-            "- CHAT = SOHBET, genel kültür, kişisel soru, tavsiye. GÜNCEL VERİ gerektirmeyen her şey.\n"
+            "- BROWSER = Web sitesinde ISLEM yapmak (arama, tiklama, video izleme, alisveris). 'X'da Y ara' = BROWSER.\n"
+            "- SYSTEM = Masaustu uygulamasi ACMAK/KAPATMAK, dosya/klasor islemleri, SES/PARLAKLIK ayari, bilgisayar kapat/yeniden baslat.\n"
+            "- SYSTEM_REPORT = Bilgisayarin MEVCUT DURUMUNU sorgulamak (CPU, RAM kullanimi, disk dolulugu, pil, sicaklik, kasiyor, yavasliyor).\n"
+            "- IMAGE = Resim/gorsel URETMEK (cizim, logo, illustrasyon).\n"
+            "- CODING = Kod/script/program YAZMAK veya DUZELTMEK. 'kod yaz', 'script yaz', 'program yap' = CODING.\n"
+            "- VISION = Ekrani GORMEK/okumak.\n"
+            "- MATH = Matematiksel HESAPLAMA. Sayi + islem iceren ifadeler (arti, eksi, carpi, bolu, karekok, yuzde).\n"
+            "- SEARCH = Internette GUNCEL bilgi aramak (hava durumu, doviz kuru, fiyat, mac skoru, haber, deprem).\n"
+            "- CHAT = SOHBET, genel kultur, tavsiye, oneri, tanim. Internete gerek OLMAYAN her sey.\n"
             "\n"
-            "KRİTİK KURAL: ÇIKTIN SADECE TEK KELİME OLMALI!\n"
+            "!!! SADECE TEK KELIME YAZ !!!\n"
             "\n"
-            "EN ÖNEMLİ KURAL - BAĞLAM ANLAMA:\n"
-            "Bir uygulama ismi geçmesi her zaman SYSTEM demek DEĞİLDİR!\n"
-            "- MASAÜSTÜ uygulamasını AÇMAK/KAPATMAK istiyorsa -> SYSTEM\n"
-            "- WEB SİTESİNDE bir şey yapmak istiyorsa (ara, tıkla, izle) -> BROWSER\n"
-            "- Uygulama HAKKINDA genel BİLGİ soruyorsa -> CHAT\n"
-            "- Uygulamanın KAYNAK tüketimini soruyorsa -> SYSTEM_REPORT\n"
+            "=== KRITIK KURALLAR (SIRASINA DIKKAT ET) ===\n"
             "\n"
-            "CHAT vs SEARCH AYIRIMI:\n"
-            "- Cevap zamanla DEĞİŞEBİLİR (fiyat, hava, skor, güncel olay) -> SEARCH\n"
-            "- Cevap HER ZAMAN AYNI (genel kültür, tanım, tarihsel bilgi) -> CHAT\n"
-            "- Sohbet, selamlaşma, tavsiye, fikir -> CHAT\n"
+            "KURAL 1 - SAYI + ISLEM = MATH:\n"
+            "Eger mesajda SAYI ve ISLEM varsa (arti, eksi, carpi, bolu, karekok, yuzde, kac eder) -> MATH\n"
+            "\"500 arti 200\" -> MATH (SEARCH degil!)\n"
+            "\"100 bolu 5\" -> MATH (SEARCH degil!)\n"
             "\n"
-            "SEARCH TETİKLEYİCİ KELİMELER (bunlar varsa BÜYÜK ihtimalle SEARCH):\n"
-            "- maç, skor, lig, puan, turnuva, şampiyon -> SEARCH\n"
-            "- fiyat, kaç TL, kaç lira, kaç dolar, kur -> SEARCH\n"
-            "- hava, derece, sıcaklık, yağmur -> SEARCH\n"
-            "- ne zaman, hangi gün, kaçta, tarih -> SEARCH\n"
-            "- deprem, haber, son dakika, gündem -> SEARCH\n"
-            "- trafik, yol, konum, nerede -> SEARCH\n"
-            "AMA: 'X nedir', 'X kimdir', 'X ne işe yarar' gibi tanım soruları -> CHAT\n"
+            "KURAL 2 - KOD/SCRIPT/PROGRAM YAZMA = CODING:\n"
+            "Eger 'kod yaz', 'script yaz', 'program yap', 'fonksiyon yaz', 'kodu duzelt' gibi ifade varsa -> CODING\n"
+            "\"Python kodu yaz\" -> CODING (SEARCH degil!)\n"
+            "\"Bana python kodu yaz\" -> CODING (SEARCH degil!)\n"
             "\n"
-            "=== BROWSER (TARAYICI KONTROLÜ) ÖRNEKLERİ ===\n"
-            "\"YouTube'da Beethoven ara\" -> BROWSER\n"
-            "\"Youtubeda müzik aç\" -> BROWSER\n"
-            "\"YouTube'a git\" -> BROWSER\n"
+            "KURAL 3 - BILGISAYAR DURUMU = SYSTEM_REPORT:\n"
+            "Eger mesaj bilgisayarin MEVCUT durumunu soruyorsa (RAM dolu mu, CPU kac, sistem durumu, ne kasiyor, disk dolulugu) -> SYSTEM_REPORT\n"
+            "\"Sistem durumu ne\" -> SYSTEM_REPORT (CHAT degil!)\n"
+            "\"RAM ne kadar dolu\" -> SYSTEM_REPORT (SEARCH degil!)\n"
+            "\"PC nasil\" -> SYSTEM_REPORT\n"
+            "\n"
+            "KURAL 4 - SES/PARLAKLIK/KAPAMA = SYSTEM:\n"
+            "Eger mesaj ses, parlaklik, WiFi, Bluetooth, bilgisayar kapatma/yeniden baslatma ile ilgiliyse -> SYSTEM\n"
+            "\"Sesi ac\" -> SYSTEM (CHAT degil!)\n"
+            "\"Sesi kis\" -> SYSTEM\n"
+            "\"Parlaklik arttir\" -> SYSTEM\n"
+            "\n"
+            "KURAL 5 - SITEDE ISLEM YAPMA = BROWSER:\n"
+            "Eger mesajda 'X'da/X'ta + bir islem' varsa (orn: Google'da ara, YouTube'da izle) -> BROWSER\n"
+            "\"Google'da hava durumu ara\" -> BROWSER (SEARCH degil! Cunku Google'da ISLEM yapmak istiyor)\n"
+            "\"YouTube'da muzik ac\" -> BROWSER\n"
+            "\n"
+            "KURAL 6 - TANIM/ONERI/TAVSIYE = CHAT:\n"
+            "Eger mesaj 'X nedir', 'X ne ise yarar', 'oneri ver', 'tavsiye' iceriyorsa -> CHAT\n"
+            "\"Spotify nedir\" -> CHAT (SEARCH degil!)\n"
+            "\"Film onerisi ver\" -> CHAT (SEARCH degil!)\n"
+            "\"RAM ne ise yarar\" -> CHAT (MATH degil! SEARCH degil!)\n"
+            "\n"
+            "KURAL 7 - SEARCH SADECE GUNCEL VERI ICIN:\n"
+            "SEARCH sadece su durumlarda: hava durumu, doviz kuru, canli mac skoru, guncel haber, deprem, fiyat\n"
+            "Tanim sorusu SEARCH DEGILDIR. Oneri SEARCH DEGILDIR. Kod yazma SEARCH DEGILDIR. Hesaplama SEARCH DEGILDIR.\n"
+            "\n"
+            "=== ORNEKLER ===\n"
+            "\n"
+            "BROWSER:\n"
+            "\"YouTube'da muzik ac\" -> BROWSER\n"
+            "\"Amazonda telefon ara\" -> BROWSER\n"
             "\"Google'da hava durumu ara\" -> BROWSER\n"
-            "\"Googleda arama yap\" -> BROWSER\n"
-            "\"Amazon'da laptop bak\" -> BROWSER\n"
-            "\"Amazonda telefon kılıfı ara\" -> BROWSER\n"
+            "\"Google'da X ara\" -> BROWSER\n"
             "\"Instagrama gir\" -> BROWSER\n"
-            "\"Twitter'a git\" -> BROWSER\n"
-            "\"Wikipediada X ara\" -> BROWSER\n"
-            "\"Reddit'e gir\" -> BROWSER\n"
-            "\"Tarayıcıda X yap\" -> BROWSER\n"
-            "\"Web sitesine git\" -> BROWSER\n"
-            "\"Gmail'i aç\" -> BROWSER\n"
-            "\"WhatsApp Web aç\" -> BROWSER\n"
+            "\"Gmail'i ac\" -> BROWSER\n"
+            "\"WhatsApp Web ac\" -> BROWSER\n"
             "\n"
-            "=== SYSTEM (MASAÜSTÜ İŞLEM) ÖRNEKLERİ ===\n"
-            "\"Spotify aç\" -> SYSTEM\n"
+            "SYSTEM:\n"
+            "\"Spotify ac\" -> SYSTEM\n"
             "\"Chrome'u kapat\" -> SYSTEM\n"
-            "\"Discord'u başlat\" -> SYSTEM\n"
-            "\"Telegram'ı aç\" -> SYSTEM\n"
-            "\"Hesap makinesini aç\" -> SYSTEM\n"
-            "\"Not defterini aç\" -> SYSTEM\n"
-            "\"Paint'i aç\" -> SYSTEM\n"
-            "\"Dosya gezginini aç\" -> SYSTEM\n"
-            "\"Ayarları aç\" -> SYSTEM\n"
-            "\"Görev yöneticisini aç\" -> SYSTEM\n"
-            "\"Kontrol panelini aç\" -> SYSTEM\n"
-            "\"Klasör oluştur\" -> SYSTEM\n"
-            "\"Masaüstüne klasör oluştur\" -> SYSTEM\n"
+            "\"Masaustune klasor olustur\" -> SYSTEM\n"
             "\"Dosya sil\" -> SYSTEM\n"
-            "\"Temp klasörünü temizle\" -> SYSTEM\n"
-            "\"Geri dönüşüm kutusunu boşalt\" -> SYSTEM\n"
-            "\"Bilgisayarı kapat\" -> SYSTEM\n"
-            "\"Bilgisayarı yeniden başlat\" -> SYSTEM\n"
-            "\"Ses aç\" -> SYSTEM\n"
-            "\"Sesi kıs\" -> SYSTEM\n"
-            "\"Parlaklığı arttır\" -> SYSTEM\n"
-            "\"WiFi'yi kapat\" -> SYSTEM\n"
-            "\"Bluetooth aç\" -> SYSTEM\n"
-            "\"Müzik çal\" -> SYSTEM\n"
-            "\"Uyku moduna geç\" -> SYSTEM\n"
-            "\"Yeni Word belgesi oluştur\" -> SYSTEM\n"
+            "\"Sesi ac\" -> SYSTEM\n"
+            "\"Sesi kis\" -> SYSTEM\n"
+            "\"Bilgisayari kapat\" -> SYSTEM\n"
+            "\"Bilgisayari yeniden baslat\" -> SYSTEM\n"
+            "\"WiFi kapat\" -> SYSTEM\n"
             "\n"
-            "=== SYSTEM_REPORT (DURUM SORGU) ÖRNEKLERİ ===\n"
+            "SYSTEM_REPORT:\n"
             "\"Sistem durumu ne\" -> SYSTEM_REPORT\n"
             "\"PC durumu\" -> SYSTEM_REPORT\n"
             "\"RAM ne kadar dolu\" -> SYSTEM_REPORT\n"
-            "\"CPU yüzde kaç\" -> SYSTEM_REPORT\n"
-            "\"Ne kasıyor\" -> SYSTEM_REPORT\n"
-            "\"Bilgisayar neden yavaş\" -> SYSTEM_REPORT\n"
-            "\"Hangi uygulama RAM yiyor\" -> SYSTEM_REPORT\n"
-            "\"C diskini ne dolduruyor\" -> SYSTEM_REPORT\n"
-            "\"Bilgisayarımda C diskini en çok ne dolduruyor\" -> SYSTEM_REPORT\n"
-            "\"Disk ne kadar dolu\" -> SYSTEM_REPORT\n"
-            "\"RAM sömüren uygulamalar\" -> SYSTEM_REPORT\n"
-            "\"Pil durumu\" -> SYSTEM_REPORT\n"
+            "\"Ne kasiyor\" -> SYSTEM_REPORT\n"
+            "\"Diskimi ne dolduruyor\" -> SYSTEM_REPORT\n"
             "\"Oyun modu\" -> SYSTEM_REPORT\n"
             "\"RAM temizle\" -> SYSTEM_REPORT\n"
-            "\"Diskimi ne dolduruyor\" -> SYSTEM_REPORT\n"
-            "\"GPU sıcaklığı\" -> SYSTEM_REPORT\n"
+            "\"CPU yuzde kac\" -> SYSTEM_REPORT\n"
             "\n"
-            "=== IMAGE (GÖRSEL ÜRETME) ÖRNEKLERİ ===\n"
-            "\"Kedi resmi çiz\" -> IMAGE\n"
-            "\"Logo tasarla\" -> IMAGE\n"
-            "\"Uzay gemisi çiz\" -> IMAGE\n"
-            "\"Resim yap\" -> IMAGE\n"
-            "\"Görsel oluştur\" -> IMAGE\n"
-            "\"Avatar tasarla\" -> IMAGE\n"
-            "\"Poster tasarla\" -> IMAGE\n"
-            "\n"
-            "=== CODING ÖRNEKLERİ ===\n"
-            "\"Python kodu yaz\" -> CODING\n"
-            "\"JavaScript fonksiyonu yaz\" -> CODING\n"
-            "\"HTML sayfası oluştur\" -> CODING\n"
-            "\"Bu kodu düzelt\" -> CODING\n"
-            "\"SQL sorgusu yaz\" -> CODING\n"
-            "\"Script hazırla\" -> CODING\n"
-            "\n"
-            "=== VISION ÖRNEKLERİ ===\n"
-            "\"Ekrana bak\" -> VISION\n"
-            "\"Ne görüyorsun\" -> VISION\n"
-            "\"Ekrandakini analiz et\" -> VISION\n"
-            "\n"
-            "=== MATH ÖRNEKLERİ ===\n"
-            "\"5 artı 3 kaç\" -> MATH\n"
-            "\"Hesapla 100 bölü 7\" -> MATH\n"
-            "\"Karekök 144\" -> MATH\n"
-            "\"Yüzde hesapla\" -> MATH\n"
-            "\"15'in karesi\" -> MATH\n"
-            "\n"
-            "=== SEARCH (GÜNCEL VERİ GEREKTİREN) ÖRNEKLERİ ===\n"
-            "\"Hava nasıl\" -> SEARCH\n"
-            "\"Hava durumu\" -> SEARCH\n"
-            "\"Yarın hava nasıl olacak\" -> SEARCH\n"
-            "\"İstanbul'da hava kaç derece\" -> SEARCH\n"
-            "\"Bugün günlerden ne\" -> SEARCH\n"
-            "\"Saat kaç\" -> SEARCH\n"
-            "\"Bugün tarih ne\" -> SEARCH\n"
-            "\"Dolar kaç TL\" -> SEARCH\n"
-            "\"Euro kaç lira\" -> SEARCH\n"
-            "\"Bitcoin kaç dolar\" -> SEARCH\n"
-            "\"Altın fiyatı\" -> SEARCH\n"
-            "\"Borsa ne durumda\" -> SEARCH\n"
-            "\"İstanbul'dan Ankara'ya nasıl gidilir\" -> SEARCH\n"
-            "\"En yakın hastane nerede\" -> SEARCH\n"
-            "\"Yol tarifi ver\" -> SEARCH\n"
-            "\"Trafik durumu\" -> SEARCH\n"
-            "\"Son deprem nerede oldu\" -> SEARCH\n"
-            "\"Güncel haberler\" -> SEARCH\n"
-            "\"Bugün ne oldu\" -> SEARCH\n"
-            "\"Galatasaray maç skoru\" -> SEARCH\n"
-            "\"Süper Lig puan durumu\" -> SEARCH\n"
-            "\"Türkiye nüfusu kaç\" -> SEARCH\n"
-            "\"Benzin fiyatı\" -> SEARCH\n"
-            "\"Elektrik fiyatı\" -> SEARCH\n"
-            "\"iPhone 16 fiyatı\" -> SEARCH\n"
-            "\"Netflix'te bu hafta ne var\" -> SEARCH\n"
-            "\"Bugün hangi maçlar var\" -> SEARCH\n"
-            "\"Seçim sonuçları\" -> SEARCH\n"
+            "SEARCH:\n"
+            "\"Hava nasil\" -> SEARCH\n"
+            "\"Dolar kac TL\" -> SEARCH\n"
+            "\"Galatasaray mac skoru\" -> SEARCH\n"
+            "\"Guncel haberler\" -> SEARCH\n"
             "\"Deprem mi oldu\" -> SEARCH\n"
-            "\"Son dakika haberleri\" -> SEARCH\n"
-            "\"Galatasaray Juventus maçı hangi gün\" -> SEARCH\n"
-            "\"Fenerbahçe maçı ne zaman\" -> SEARCH\n"
-            "\"Beşiktaş maçı kaçta\" -> SEARCH\n"
-            "\"Trabzonspor maç takvimi\" -> SEARCH\n"
-            "\"Şampiyonlar Ligi maçları\" -> SEARCH\n"
-            "\"Dünya Kupası ne zaman\" -> SEARCH\n"
-            "\"X takımı Y takımı maçı\" -> SEARCH\n"
-            "\"Maç sonucu\" -> SEARCH\n"
-            "\"Lig sıralaması\" -> SEARCH\n"
-            "\"Transfer haberleri\" -> SEARCH\n"
-            "\"Konsere bilet fiyatı\" -> SEARCH\n"
-            "\"X filmi ne zaman vizyona giriyor\" -> SEARCH\n"
-            "\"Okullar ne zaman açılıyor\" -> SEARCH\n"
-            "\"Bayram tatili ne zaman\" -> SEARCH\n"
-            "\"Resmi tatil günleri\" -> SEARCH\n"
+            "\"Benzin fiyati\" -> SEARCH\n"
             "\n"
-            "=== CHAT (SOHBET / GENEL BİLGİ) ÖRNEKLERİ ===\n"
-            "\"Nasılsın\" -> CHAT\n"
+            "IMAGE:\n"
+            "\"Kedi resmi ciz\" -> IMAGE\n"
+            "\"Logo tasarla\" -> IMAGE\n"
+            "\"Gorsel olustur\" -> IMAGE\n"
+            "\n"
+            "CODING:\n"
+            "\"Python kodu yaz\" -> CODING\n"
+            "\"Bana python kodu yaz\" -> CODING\n"
+            "\"Bu kodu duzelt\" -> CODING\n"
+            "\"HTML sayfasi olustur\" -> CODING\n"
+            "\"Script yaz\" -> CODING\n"
+            "\n"
+            "MATH:\n"
+            "\"5 arti 3 kac\" -> MATH\n"
+            "\"500 arti 200\" -> MATH\n"
+            "\"Karekok 144\" -> MATH\n"
+            "\"Yuzde hesapla\" -> MATH\n"
+            "\"100 bolu 7\" -> MATH\n"
+            "\n"
+            "VISION:\n"
+            "\"Ekrana bak\" -> VISION\n"
+            "\"Ne goruyorsun\" -> VISION\n"
+            "\n"
+            "CHAT:\n"
+            "\"Nasilsin\" -> CHAT\n"
             "\"Merhaba\" -> CHAT\n"
-            "\"Selam\" -> CHAT\n"
-            "\"Sen kimsin\" -> CHAT\n"
-            "\"Adın ne\" -> CHAT\n"
-            "\"Benim adım ne\" -> CHAT\n"
-            "\"Teşekkürler\" -> CHAT\n"
-            "\"Günaydın\" -> CHAT\n"
-            "\"İyi geceler\" -> CHAT\n"
-            "\"YouTube kaç yılında kuruldu\" -> CHAT\n"
-            "\"YouTube'un sahibi kim\" -> CHAT\n"
-            "\"Google ne zaman kuruldu\" -> CHAT\n"
+            "\"YouTube kac yilinda kuruldu\" -> CHAT\n"
             "\"Spotify nedir\" -> CHAT\n"
-            "\"Discord nasıl çalışır\" -> CHAT\n"
-            "\"Chrome nedir\" -> CHAT\n"
-            "\"Python hangi yılda çıktı\" -> CHAT\n"
+            "\"Film onerisi ver\" -> CHAT\n"
+            "\"RAM ne ise yarar\" -> CHAT\n"
             "\"Yapay zeka nedir\" -> CHAT\n"
-            "\"En iyi film hangisi\" -> CHAT\n"
-            "\"Türkiye'nin başkenti\" -> CHAT\n"
             "\"Einstein kimdir\" -> CHAT\n"
-            "\"Ne önerirsin\" -> CHAT\n"
             "\"Tavsiye ver\" -> CHAT\n"
-            "\"Bir şaka anlat\" -> CHAT\n"
-            "\"Hikaye anlat\" -> CHAT\n"
-            "\"Hangi telefon iyi\" -> CHAT\n"
-            "\"Laptop tavsiyesi\" -> CHAT\n"
-            "\"Oyun önerisi\" -> CHAT\n"
-            "\"Film önerisi\" -> CHAT\n"
-            "\"RAM ne işe yarar\" -> CHAT\n"
-            "\"CPU ne demek\" -> CHAT\n"
-            "\"SSD ile HDD farkı\" -> CHAT\n"
-            "\"Bitcoin nedir\" -> CHAT\n"
-            "\"Neler yapabilirsin\" -> CHAT\n"
-            "\"Kendini tanıt\" -> CHAT\n"
-            "\"Windows 11 ne zaman çıktı\" -> CHAT\n"
-            "\"Yemek tarifi ver\" -> CHAT\n"
-            "\"Mars'a gitmek mümkün mü\" -> CHAT\n"
+            "\"Laptop onerisi\" -> CHAT\n"
             "\n"
-            "HATIRLATMA: SADECE TEK KELİME YAZ!\n"
-            "Doğru çıktılar: BROWSER, SYSTEM, CHAT, IMAGE, CODING, VISION, MATH, SYSTEM_REPORT, SEARCH"
+            "!!! SADECE TEK KELIME YAZ !!!\n"
+            "Gecerli ciktilar: BROWSER, SYSTEM, SYSTEM_REPORT, IMAGE, CODING, VISION, MATH, SEARCH, CHAT"
         )
         
         try:
@@ -364,10 +279,14 @@ class LocalBrain:
             content = response['message']['content'].upper().strip()
             
             # Strip reasoning tags from phi4-mini-reasoning (e.g. <THINK>...</THINK>)
-            content = re.sub(r'<THINK>.*?</THINK>', '', content, flags=re.DOTALL).strip()
+            content = re.sub(r'<THINK>.*?</THINK>', '', content, flags=re.DOTALL | re.IGNORECASE).strip()
+            # Ek temizlik: satir sonu, fazla bosluk, noktalama
+            content = re.sub(r'[\n\r\t.,;:!?]', ' ', content).strip()
+            content = re.sub(r'\s+', ' ', content)
             
-            # Clean up potential extra text (e.g. "INTENT: CHAT" -> "CHAT")
-            for keyword in ["BROWSER", "SYSTEM_REPORT", "SYSTEM", "IMAGE", "CODING", "VISION", "MATH", "SEARCH", "CHAT", "ANALYSIS"]:
+            # Bilinen keyword'lerden ilkini bul (SYSTEM_REPORT, SYSTEM sirasi onemli!)
+            valid_keywords = ["BROWSER", "SYSTEM_REPORT", "SYSTEM", "IMAGE", "CODING", "VISION", "MATH", "SEARCH", "CHAT"]
+            for keyword in valid_keywords:
                 if keyword in content:
                     return keyword
             
@@ -720,23 +639,6 @@ class LocalBrain:
         except: pass
         
         # 3. Konuşma geçmişini dahil et
-        # Web search araçlarını ekle — model güncel bilgi gerektiğinde otomatik arama yapabilsin
-        from ollama import chat, web_search, web_fetch
-        
-        # System prompt'a web search yeteneği ekle
-        sys_prompt += (
-            "\n\nWEB ARAMA YETENEĞİN:\n"
-            "Sana web_search ve web_fetch araçları verildi. "
-            "Eğer kullanıcının sorusu GÜNCEL bilgi gerektiriyorsa (maç sonucu, fiyat, hava durumu, "
-            "güncel haberler, son dakika, skor, tarih/saat gibi), MUTLAKA web_search aracını kullan. "
-            "Genel kültür veya sohbet sorularında araç kullanmak zorunda değilsin.\n"
-            "\n"
-            "CEVAP UZUNLUĞU KURALI:\n"
-            "- SADECE sorulan şeye cevap ver. Gereksiz detay EKLEME.\n"
-            "- Cevap MAKSIMUM 3-4 satır olsun. Paragraf yazma.\n"
-            "- Ekstra bilgi vermek istiyorsan 'Detayları ister misiniz efendim?' diye sor.\n"
-        )
-        
         messages = [{'role': 'system', 'content': sys_prompt}]
         
         if history and len(history) > 0:
@@ -749,59 +651,13 @@ class LocalBrain:
             # History yoksa sadece mevcut prompt'u gönder
             messages.append({'role': 'user', 'content': prompt})
         
-        # Tool-calling agent loop (web search desteği ile)
-        available_tools = {'web_search': web_search, 'web_fetch': web_fetch}
-        max_iterations = 3  # Chat icin daha kisa limit
-        
+        # Basit sohbet — web search KULLANILMAZ (guncel veri icin SEARCH agenti var)
         try:
-            for i in range(max_iterations):
-                res = chat(
-                    model=model, 
-                    messages=messages,
-                    tools=[web_search, web_fetch],
-                    think=True
-                )
-                
-                if res.message.content:
-                    try:
-                        print(f"SOHBET cevap verdi (iterasyon {i+1})")
-                    except: pass
-                
-                messages.append(res.message)
-                
-                # Tool call varsa isle
-                if res.message.tool_calls:
-                    try:
-                        print(f"SOHBET web arama yapiyor (iterasyon {i+1}): {[tc.function.name for tc in res.message.tool_calls]}")
-                    except: pass
-                    
-                    for tool_call in res.message.tool_calls:
-                        function_to_call = available_tools.get(tool_call.function.name)
-                        if function_to_call:
-                            args = tool_call.function.arguments
-                            result = function_to_call(**args)
-                            
-                            user_search = args.get('query', '') or args.get('url', '')
-                            formatted = self._format_search_results(result, user_search)
-                            
-                            try:
-                                print(f"Tool sonucu ({tool_call.function.name}): {formatted[:150]}...")
-                            except: pass
-                            
-                            messages.append({
-                                'role': 'tool',
-                                'content': formatted[:2000 * 4],
-                                'tool_name': tool_call.function.name
-                            })
-                        else:
-                            messages.append({
-                                'role': 'tool',
-                                'content': f'Tool {tool_call.function.name} bulunamadi',
-                                'tool_name': tool_call.function.name
-                            })
-                else:
-                    # Tool call yoksa donguden cik
-                    break
+            res = ollama.chat(model=model, messages=messages)
+            
+            try:
+                print(f"SOHBET cevap verdi")
+            except: pass
             
             final_content = res.message.content if res.message.content else ""
             if not final_content:

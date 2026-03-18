@@ -1,34 +1,30 @@
 {
   "project_name": "Yapay Zeka Asistani v2",
-  "manifest_version": 10011,
+  "manifest_version": 10012,
   "base_url": "https://raw.githubusercontent.com/revolvomahdi/Jarvis-V2/main/",
-  "last_updated": "2026-03-10 21:55:26",
+  "last_updated": "2026-03-17 20:47:46",
   "files": {
     ".env": {
       "version": 10003,
       "hash": "5243f3196561edab99b5d54ae5afbe1788bad9976656884356cb6e33e5bede87",
-      "has_diff": true,
-      "diff_path": ".env.diff",
-      "diff_hash": "dd3af8465113e010ff783be17764f504f1c36a5fbda2500e936a972e715b9d14"
+      "has_diff": false
     },
     ".gitignore": {
-      "version": 10005,
-      "hash": "bb73782346aa1d6c3e64f3014349dcf7493d047910cb28c773ad4ae5361c54d9",
+      "version": 10006,
+      "hash": "cdaa76f9fbebaed7ce8ad764846541196e863a73d305e2875e9cf4c5b1632dd4",
       "has_diff": false
     },
     "app.py": {
       "version": 10003,
       "hash": "ff27326b35055925dd69be48399d36c549fb993d22c1092780870df4e30ed67d",
-      "has_diff": true,
-      "diff_path": "app.py.diff",
-      "diff_hash": "be7cc07e4fca55ebd571a598282cc89d301eb2e93e18822a707dab0d6dd3dfc3"
+      "has_diff": false
     },
     "config.json": {
-      "version": 10005,
-      "hash": "a3e18107a96b6f6a79b4d74fefa41d714f7f25c3e8ba1a1f1a115ab9c6993c26",
+      "version": 10006,
+      "hash": "2db44adc371568be444d43d09418cafb15fe665f6aca2a7c3a8d895b5af78685",
       "has_diff": true,
       "diff_path": "config.json.diff",
-      "diff_hash": "e43e2ddc8113282f9094f3ae0c6ba6d678acc8bafa20ddbd2e506cbb58ccedec"
+      "diff_hash": "2eee3bab4f632ca058288c9034e9e0c5f513e40cc0a059f893a27e70fb0dcdc0"
     },
     "data/en.json": {
       "version": 10002,
@@ -43,72 +39,56 @@
     "engines/base.py": {
       "version": 10003,
       "hash": "42657f16a9136b17161b51e4e59ee49f44fc5e5892742fa8176446ddc6c7d0dc",
-      "has_diff": true,
-      "diff_path": "engines/base.py.diff",
-      "diff_hash": "3e9193b07333ce14416eff02736d95698776c0b064b553afbb67989809614b20"
+      "has_diff": false
     },
     "engines/browser_agent.py": {
       "version": 10003,
       "hash": "72ddacc50cd5b3f1b0295e7e9e3c6f7d3841dd3847107d7b25e0b0ab16ed533b",
-      "has_diff": true,
-      "diff_path": "engines/browser_agent.py.diff",
-      "diff_hash": "1781d763bf2a74c2d0d80e7b8f9ea860c787dd0f654a91df4a2e143d464375f2"
+      "has_diff": false
     },
     "engines/browser_engine.py": {
       "version": 10002,
       "hash": "af56dc1c9d1f50d95edc33297cb52314b689ac1772d5984af4d664dd01dd4fad",
-      "has_diff": true,
-      "diff_path": "engines/browser_engine.py.diff",
-      "diff_hash": "6a8090363d3cb6d278b7a34771fc6283ba5c0900b4e0c97ebc4bb8e5065b402e"
+      "has_diff": false
     },
     "engines/gemini_engine.py": {
       "version": 10003,
       "hash": "80d9b22d3503f24a5780dfbda20850f5cc50fdb650139c39feaae953b3fb4ef0",
-      "has_diff": true,
-      "diff_path": "engines/gemini_engine.py.diff",
-      "diff_hash": "ce60d6e35f08c317d4ce06ed2e48222ab894154976998fc8efe1650609b41fc0"
+      "has_diff": false
     },
     "engines/image_generator.py": {
       "version": 10003,
       "hash": "ad9b18d56cc89f2dadb2efb44b18c005ce7b1abca016631133f0fc21e6a8075c",
-      "has_diff": true,
-      "diff_path": "engines/image_generator.py.diff",
-      "diff_hash": "b91efacf82f7708c2befd0bf7244a8b1e6b1e0d324c59d7176c9c256a555cb80"
+      "has_diff": false
     },
     "engines/local_brain.py": {
-      "version": 10005,
-      "hash": "939268e222a13731675797b739481f0e4d8142b087ce648b4126d8f22e18f445",
+      "version": 10006,
+      "hash": "258a9645c69b1e100e2be0db920146a724d0e64c47a00a255bb0a56e2af7a662",
       "has_diff": true,
       "diff_path": "engines/local_brain.py.diff",
-      "diff_hash": "595c9265618f1d6b8464c246284f2ab53f0a4df7a7e2c2b13be25ee960704e83"
+      "diff_hash": "5726d8f6c1a5106283e61c4cb09660f6078b3eb83c808490206b08fafeccb052"
     },
     "engines/manager.py": {
-      "version": 10005,
-      "hash": "54a1639b7da16f9db2a4b53acf3f9475728cbe09184b454d0b14b22456243b72",
+      "version": 10006,
+      "hash": "535ec57b0d3317682493de4485ca026b45fc6c8c7a4a66eb43a4b7347dab3a81",
       "has_diff": true,
       "diff_path": "engines/manager.py.diff",
-      "diff_hash": "3a991ef419ec7e8ba2794f4c6a5a250d02d789b7116dd051007c6038fd8ac5cd"
+      "diff_hash": "34e9d79a21371b21c46eb254edf04f8103612c59b6901f8179f4d96111a1b1f7"
     },
     "engines/ollama_engine.py": {
       "version": 10003,
       "hash": "b2a01a4f49cf559c40870ff20acecc2923aec4bd814b48b2762a2df2123949da",
-      "has_diff": true,
-      "diff_path": "engines/ollama_engine.py.diff",
-      "diff_hash": "b19e7019334e920f7c78424292910da834d107ef9fb9781711e576edd799391e"
+      "has_diff": false
     },
     "engines/system_tools.py": {
       "version": 10003,
       "hash": "46ef614b37d6d49840c0df901553499d284aad945a44c4fc1755922f568b96ad",
-      "has_diff": true,
-      "diff_path": "engines/system_tools.py.diff",
-      "diff_hash": "edd5d8e3c91579817a0d380718bee95c5c1f3648183ce34242fa6de443191986"
+      "has_diff": false
     },
     "engines/task_manager.py": {
       "version": 10003,
       "hash": "ec235454454d3a35fc9e374cab3ec9577bfa7aad758fa4894b053007a03e26bb",
-      "has_diff": true,
-      "diff_path": "engines/task_manager.py.diff",
-      "diff_hash": "f30570d74896ec5182ba94ee0a538e4486497cae806e19402eebabaf8933ce0d"
+      "has_diff": false
     },
     "installer/EKSIK_MODEL_TAMAMLA.bat": {
       "version": 10002,
@@ -128,30 +108,22 @@
     "mini_mode.py": {
       "version": 10003,
       "hash": "3ddd300c022544d83d49f533c7facafe0f7607dfd79742851dc1b757b88d6142",
-      "has_diff": true,
-      "diff_path": "mini_mode.py.diff",
-      "diff_hash": "bd79b4fdfc0f8ae0162d476f5db74e59bd31e0c007b04f91303834984b54296b"
+      "has_diff": false
     },
     "publish.py": {
       "version": 10008,
       "hash": "aeb3aad6c627c482eab90df95ea24ffa9a30f1f53c5b7b1e0b9283e0bf5b33c9",
-      "has_diff": true,
-      "diff_path": "publish.py.diff",
-      "diff_hash": "049a08be11b8e4ad4a45d5691edb726fd0d1910659bf7c08bfe805aac698fc02"
+      "has_diff": false
     },
     "requirements.txt": {
       "version": 10004,
       "hash": "edda7a50896e8c95692fc2c83648cbe30aa6eb5f2389244db1da5d483293980a",
-      "has_diff": true,
-      "diff_path": "requirements.txt.diff",
-      "diff_hash": "b042b130602b678d62f7522092c8394cbcea8828bd806887c00145b222848592"
+      "has_diff": false
     },
     "server.py": {
       "version": 10005,
       "hash": "0b7103f057d8c22a5c75881c1013646555f63af1d3239392075e4b2a8e25a695",
-      "has_diff": true,
-      "diff_path": "server.py.diff",
-      "diff_hash": "e9032174f5b406bfd441f21bd8426d1d50ebd72012e2d4323bea31860c5e4ab4"
+      "has_diff": false
     },
     "setup_unlock_task.bat": {
       "version": 10002,
@@ -176,51 +148,37 @@
     "tools/check_models.py": {
       "version": 10003,
       "hash": "01ae870a75355b39fd4ea0cb44ba7be435f372b55b90919c8c5a123163038583",
-      "has_diff": true,
-      "diff_path": "tools/check_models.py.diff",
-      "diff_hash": "5242b3606f88cc4580e6fda15eb58dbb1430095e6f5219b0cb40bbbf4254c83f"
+      "has_diff": false
     },
     "tools/test_tts.py": {
       "version": 10003,
       "hash": "237ccf5c89b7201e56a2cdd4be59d0d6ad584462f3542455f15c66d02d11ab4a",
-      "has_diff": true,
-      "diff_path": "tools/test_tts.py.diff",
-      "diff_hash": "d22b510f79ebb1085f67173224b85cef867db70b6a1971e82a26a93874244377"
+      "has_diff": false
     },
     "ui/__init__.py": {
       "version": 10002,
       "hash": "fdeb86b375d7eb579d54c96327ec26950691b445b3cf15b2df1378eac298e68d",
-      "has_diff": true,
-      "diff_path": "ui/__init__.py.diff",
-      "diff_hash": "c198c97c26cbb4ecd33d2d8295cce12bf66bef14baac46a37dca409fc0ef94e2"
+      "has_diff": false
     },
     "ui/browser_overlay.py": {
       "version": 10002,
       "hash": "af2bf0c65d01ba1699cdcfb6e823c472465f78f1c6698ded6d62fc201b79c095",
-      "has_diff": true,
-      "diff_path": "ui/browser_overlay.py.diff",
-      "diff_hash": "c159339ffc1425db29b8e9aa013ed49bd65a7da5563a33c85faca1bde86925ee"
+      "has_diff": false
     },
     "ui/components.py": {
       "version": 10003,
       "hash": "2f1d04c8b901389a8ab05e2a58b25c17a5abe2d6262f859f9cd65448cabed988",
-      "has_diff": true,
-      "diff_path": "ui/components.py.diff",
-      "diff_hash": "c42628c03c07893281b8a6f42e0063c560fb7485ad917561883ef8e1841367cf"
+      "has_diff": false
     },
     "ui/settings_window.py": {
       "version": 10003,
       "hash": "69fd0701eccd8193a83c941c40763a7e229667691f079169e7226f2f8b1db1d0",
-      "has_diff": true,
-      "diff_path": "ui/settings_window.py.diff",
-      "diff_hash": "3bf2286bc049d91d9bac467ced521aa31f02b2b6ecd7302ff4b3fc620e013b73"
+      "has_diff": false
     },
     "ui/styles.py": {
       "version": 10003,
       "hash": "96501650b380c8b99016b1025b2da379c7064e67b9c2d262373ace08b8095b89",
-      "has_diff": true,
-      "diff_path": "ui/styles.py.diff",
-      "diff_hash": "81a6304537bd82bf3f92548a81530f106b2fb56c6b2dbf54a64513f8f7c3ffbe"
+      "has_diff": false
     },
     "unlock_action.bat": {
       "version": 10002,
@@ -230,49 +188,41 @@
     "utils/audio_manager.py": {
       "version": 10003,
       "hash": "c98a7fda18aa3cf083cb2347b090674abf00b54fc364167ffdaa271cb2b8051a",
-      "has_diff": true,
-      "diff_path": "utils/audio_manager.py.diff",
-      "diff_hash": "bc9968594a0f1d1042497aa4639d678b2c23fdbab065194ff61d8535cda7728d"
+      "has_diff": false
     },
     "utils/local_voice_manager.py": {
-      "version": 10002,
-      "hash": "0748bf3ea3fb209bb6258b2f8759fbd290860d1d3740a2db839c40451f3aff8b",
-      "has_diff": false
+      "version": 10003,
+      "hash": "d5824b774c8394bc8c45f85b3f883eb604f40fda4a68582709e69f14277e4858",
+      "has_diff": true,
+      "diff_path": "utils/local_voice_manager.py.diff",
+      "diff_hash": "c60301a8b486541da1416677c0883a2cd671b188323a09d4b4115d98be37195e"
     },
     "utils/localization.py": {
       "version": 10003,
       "hash": "497c923859f4cb13f81616631199729378adad3ecbfcc47a4a968615416bbd2f",
-      "has_diff": true,
-      "diff_path": "utils/localization.py.diff",
-      "diff_hash": "66a1bd2a168644980f0dc82c9a610ff31d94e605ac228b0d2db90d68cf792bb9"
+      "has_diff": false
     },
     "utils/memory_manager.py": {
       "version": 10003,
       "hash": "3830cef78cb144019af1a86d6d89f995bd69c1f17b692f50980b78dc0336a128",
-      "has_diff": true,
-      "diff_path": "utils/memory_manager.py.diff",
-      "diff_hash": "e6783793cef7e69ded770d5de5c9fabe016d1255adba5e1e86a66b6512715109"
+      "has_diff": false
     },
     "utils/settings_manager.py": {
       "version": 10005,
       "hash": "caa91c71a9b84d3125c96d64f6b55f4921617d674884cdafc9eb23c7137293a5",
-      "has_diff": true,
-      "diff_path": "utils/settings_manager.py.diff",
-      "diff_hash": "e7c665e0d99cc9251a2407c625c5be2b842c3710269802bd23386b7b63a08c4c"
+      "has_diff": false
     },
     "utils/voice_manager.py": {
       "version": 10004,
       "hash": "ef0e880f152fe1aeed1e01308ca2952246f5d1625c14c8965cc4f0783ec561a5",
-      "has_diff": true,
-      "diff_path": "utils/voice_manager.py.diff",
-      "diff_hash": "f05a47d3f99069d6f926c99fa4ece708c9a43237e6658bafcb958c4a5f186b8c"
+      "has_diff": false
     },
     "voice.py": {
-      "version": 10003,
-      "hash": "fe5bc82ea1b404c0c6de8b25d984ade0788e87a6a8dfa65525179da321ae420b",
+      "version": 10004,
+      "hash": "a58617ec013875c562dcf3418bd5d853cdd240db79d301cef38926e46992316f",
       "has_diff": true,
       "diff_path": "voice.py.diff",
-      "diff_hash": "6f7fb2216d2694bb873fc6581c558dd92abdc2669d2eb492c19e07d9f01261ac"
+      "diff_hash": "aa4aad19a68cfdc616d30ddeace53c55b79c2175dd32563be0d78fd5a7216a27"
     },
     "web/static/audio/tts_c8359d4740cb4db5aebd1065422d980b.mp3": {
       "version": 10001,
@@ -282,9 +232,7 @@
     "web/static/css/style.css": {
       "version": 10004,
       "hash": "673ed437d485c47af749e8c209c78c96abb84782441aee569e59218ce23d21d1",
-      "has_diff": true,
-      "diff_path": "web/static/css/style.css.diff",
-      "diff_hash": "1120c8cffc2119ec329e96be0cf062f9a2211021d18862279fcdf1b1793726d1"
+      "has_diff": false
     },
     "web/static/generated_images/gen_20260212_225545.jpg": {
       "version": 10001,
@@ -294,9 +242,7 @@
     "web/static/js/app.js": {
       "version": 10005,
       "hash": "aec7ebd83b7ee921ab89ebc610d66ef2094a6fab3ce643c47b53ae369da656e1",
-      "has_diff": true,
-      "diff_path": "web/static/js/app.js.diff",
-      "diff_hash": "806d45233575eae75837d0ae75e88a0629eac612e6f8a916ec2a33254a7e8e0e"
+      "has_diff": false
     }
   },
   "exclude": [

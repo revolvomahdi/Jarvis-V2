@@ -126,10 +126,10 @@
       "features": [
         {
           "id": "jarvis_voice",
-          "start_line": 17,
-          "end_line": 215,
-          "hash": "63e0dceb717d69547975a9b63d0118a8e60a70861f8cea633302df79d6c0401e",
-          "line_count": 199
+          "start_line": 20,
+          "end_line": 284,
+          "hash": "52b8858388a0990aacf70232c8e677b62e140d2dca02499e8914d4897684abc1",
+          "line_count": 265
         }
       ]
     },
@@ -193,9 +193,9 @@
         {
           "id": "local_brain",
           "start_line": 15,
-          "end_line": 1329,
-          "hash": "f43579858c61f1f8da5669864c0ca83f0bbf274d405719c74a4173c3a262a7b5",
-          "line_count": 1315
+          "end_line": 1185,
+          "hash": "91ec259b0bdb049d74eb103dc6a825af4e54d3093c5c7e056d7b21b01e4c625b",
+          "line_count": 1171
         }
       ]
     },
@@ -204,9 +204,9 @@
         {
           "id": "engine_manager",
           "start_line": 16,
-          "end_line": 307,
-          "hash": "52e09bf3f412859d52b695e6d8442e113d9c81b9d5a5664087b522bc891b81c5",
-          "line_count": 292
+          "end_line": 273,
+          "hash": "289c8022c24d6c742d1b78a1896f700bd74779480d10770b64a0200701ed885d",
+          "line_count": 258
         }
       ]
     },
@@ -325,9 +325,9 @@
         {
           "id": "local_voice_manager",
           "start_line": 13,
-          "end_line": 218,
-          "hash": "f3fa9e95ef6b6a40235c868652ef291d721961a949f69813a853f68621a17db0",
-          "line_count": 206
+          "end_line": 292,
+          "hash": "4a6c7d03da1efcdf90909c8b98dfb38ae10da6c22e8dd228af00985f034d0014",
+          "line_count": 280
         }
       ]
     },

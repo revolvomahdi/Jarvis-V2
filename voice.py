@@ -12,7 +12,10 @@ import pyttsx3 # Fallback TTS
 
 # --- CONFIG ---
 TTS_VOICE = "tr-TR-AhmetNeural" # or tr-TR-EmelNeural
-WHISPER_MODEL_SIZE = "base" # tiny, base, small, medium, large
+TTS_RATE = "-5%"    # Biraz yavaslatarak dogallastir
+TTS_PITCH = "+5%"   # Biraz canli ton
+WHISPER_MODEL_SIZE = "medium" # medium: Turkce icin en iyi denge
+STT_INITIAL_PROMPT = "Bu bir Türkçe konuşmadır. Merhaba, nasılsınız?"
 
 # --- FEATURE: jarvis_voice ---
 class JarvisVoice:
@@ -66,6 +69,47 @@ class JarvisVoice:
         asyncio.set_event_loop(loop)
         loop.run_until_complete(self._speech_worker_async())
 
+    def _clean_text_for_tts(self, text: str) -> str:
+        """TTS icin metni temizle: markdown, kod bloklari, URL vs. kaldir."""
+        import re
+        # Kod bloklarini kaldir
+        clean = re.sub(r'```.*?```', '', text, flags=re.DOTALL)
+        clean = re.sub(r'`[^`]+`', '', clean)
+        # Bilgi etiketlerini kaldir
+        clean = re.sub(r'\[Hiz:.*?\|.*?Sure:.*?\]', '', clean)
+        # Resim linklerini kaldir
+        clean = re.sub(r'!\[.*?\]\(.*?\)', '', clean)
+        # URL'leri kaldir
+        clean = re.sub(r'https?://\S+', '', clean)
+        # Markdown isaret karakterlerini kaldir
+        clean = clean.replace('*', '').replace('#', '').replace('`', '')
+        # Emoji ve ozel unicode karakterleri kaldir
+        clean = re.sub(r'[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F900-\U0001F9FF\U00002702-\U000027B0]', '', clean)
+        # Fazla bosluk ve satir sonlarini duzenle
+        clean = re.sub(r'\n{2,}', '. ', clean)
+        clean = re.sub(r'\n', ' ', clean)
+        clean = re.sub(r'\s{2,}', ' ', clean)
+        clean = clean.strip()
+        # Cok uzun metinleri kısalt (Edge-TTS uzun metinlerde bozulur)
+        if len(clean) > 1500:
+            # Cumle sonunda kes
+            cut = clean[:1500]
+            last_period = max(cut.rfind('.'), cut.rfind('!'), cut.rfind('?'))
+            if last_period > 1000:
+                clean = cut[:last_period + 1]
+            else:
+                clean = cut + "."
+        return clean
+
+    def _escape_xml(self, text: str) -> str:
+        """XML/SSML icin ozel karakterleri escape et."""
+        text = text.replace('&', '&amp;')
+        text = text.replace('<', '&lt;')
+        text = text.replace('>', '&gt;')
+        text = text.replace('"', '&quot;')
+        text = text.replace("'", '&apos;')
+        return text
+
     async def _speech_worker_async(self):
         """Processes TTS queue using Edge TTS"""
         while self.is_running:
@@ -74,7 +118,14 @@ class JarvisVoice:
                 if not self.speech_queue.empty():
                     text = self.speech_queue.get()
                     if text:
-                        print(f"[SAY] {text}")
+                        # Metni TTS icin temizle
+                        clean_text = self._clean_text_for_tts(text)
+                        if not clean_text:
+                            print("[TTS] Temizlenen metin bos, atlaniyor.")
+                            self.speech_queue.task_done()
+                            continue
+                        
+                        print(f"[SAY] {clean_text[:100]}..." if len(clean_text) > 100 else f"[SAY] {clean_text}")
                         # Try Online EdgeTTS First
                         success = False
                         try:
@@ -82,7 +133,15 @@ class JarvisVoice:
                             # Ensure clean state
                             if os.path.exists(output_file): os.remove(output_file)
                             
-                            communicate = edge_tts.Communicate(text, TTS_VOICE)
+                            # Edge-TTS native parametreleri kullan (manuel SSML yok)
+                            # Edge-TTS kendi icinde SSML olusturur, biz disaridan sarmalarsak
+                            # cift katmanli SSML olur ve sonda garip sesler cikar.
+                            communicate = edge_tts.Communicate(
+                                text=clean_text,
+                                voice=TTS_VOICE,
+                                rate=TTS_RATE,
+                                pitch=TTS_PITCH
+                            )
                             await communicate.save(output_file)
                             
                             # Verify file exists and has size
@@ -98,7 +157,7 @@ class JarvisVoice:
                         # Fallback to Offline TTS if Failed
                         if not success:
                             print("[TTS] Switching to Offline Fallback...")
-                            self._speak_fallback(text)
+                            self._speak_fallback(clean_text)
                     
                     self.speech_queue.task_done()
                 else:
@@ -192,7 +251,17 @@ class JarvisVoice:
         if self.model_loaded and self.whisper_model:
             try:
                 # Use slightly more timeout/patience?
-                result = self.whisper_model.transcribe(filename, fp16=False, language='tr')
+                result = self.whisper_model.transcribe(
+                    filename, 
+                    fp16=False, 
+                    language='tr',
+                    initial_prompt=STT_INITIAL_PROMPT,
+                    temperature=0.0,
+                    beam_size=7,
+                    best_of=3,
+                    condition_on_previous_text=True,
+                    no_speech_threshold=0.5,
+                )
                 text = result['text'].strip()
                 if os.path.exists(filename): os.remove(filename)
                 return text
